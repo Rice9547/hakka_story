@@ -1,0 +1,4 @@
+.idea
+tmp/*
+docs/*.json
+docs/*.yaml
