@@ -11,7 +11,6 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Database DatabaseConfig `mapstructure:"database"`
 	Auth0    Auth0Config    `mapstructure:"auth0"`
-	Admin    AdminConfig    `mapstructure:"admin"`
 }
 
 type ServerConfig struct {
@@ -30,10 +29,6 @@ type DatabaseConfig struct {
 type Auth0Config struct {
 	Domain   string `mapstructure:"domain"`
 	Audience string `mapstructure:"audience"`
-}
-
-type AdminConfig struct {
-	Whitelist []string `mapstructure:"whitelist"`
 }
 
 func LoadConfig(configPath string) (Config, error) {

@@ -32,7 +32,7 @@ func main() {
 	}
 	defer db.Close()
 
-	mw := middlewares.NewAuthMiddlewares(cfg.Admin, cfg.Auth0)
+	mw := middlewares.NewAuthMiddlewares(cfg.Auth0)
 	router := gin.Default()
 	router.Use(middlewares.CORSMiddleware())
 	apiRoute := router.Group("/api")

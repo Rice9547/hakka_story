@@ -12,6 +12,3 @@ database:
 auth0:
   domain:
   audience:
-
-admin:
-  whitelist:

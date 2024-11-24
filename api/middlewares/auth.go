@@ -20,23 +20,24 @@ import (
 
 type (
 	AuthMiddlewares struct {
-		adminConf config.AdminConfig
 		auth0Conf config.Auth0Config
 	}
 
 	CustomClaims struct {
-		Email string `json:"email"`
+		Email string   `json:"email"`
+		Roles []string `json:"user_roles"`
 	}
 )
 
-func NewAuthMiddlewares(adminConf config.AdminConfig, auth0Conf config.Auth0Config) *AuthMiddlewares {
+func NewAuthMiddlewares(auth0Conf config.Auth0Config) *AuthMiddlewares {
 	return &AuthMiddlewares{
-		adminConf: adminConf,
 		auth0Conf: auth0Conf,
 	}
 }
 
 func (c *CustomClaims) Validate(ctx context.Context) error {
+	fmt.Printf("Validating custom claims: %+v\n", c)
+
 	if c.Email == "" {
 		return fmt.Errorf("email is required")
 	}
@@ -71,7 +72,10 @@ func (m *AuthMiddlewares) AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", claims.(*validator.ValidatedClaims).CustomClaims.(*CustomClaims).Email)
+		customClaims := claims.(*validator.ValidatedClaims).CustomClaims.(*CustomClaims)
+
+		c.Set("user", customClaims.Email)
+		c.Set("roles", customClaims.Roles)
 
 		c.Next()
 	}
@@ -79,9 +83,9 @@ func (m *AuthMiddlewares) AuthMiddleware() gin.HandlerFunc {
 
 func (m *AuthMiddlewares) AdminOnlyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		user, exists := c.Get("user")
-		if !exists || !slices.Contains(m.adminConf.Whitelist, user.(string)) {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+		roles, exists := c.Get("roles")
+		if !exists || !slices.Contains(roles.([]string), "admin") {
+			response.Error(c, http.StatusForbidden, "Forbidden")
 			return
 		}
 		c.Next()
