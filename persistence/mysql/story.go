@@ -17,7 +17,15 @@ func NewStory(client *Client) dstory.Repository {
 }
 
 func (r *StoryRepository) Save(s *dstory.Story) error {
-	return r.DB.Save(s).Error
+	return r.DB.Transaction(func(tx *gorm.DB) error {
+		if s.Image != nil {
+			if err := tx.Save(s.Image).Error; err != nil {
+				return err
+			}
+		}
+
+		return tx.Save(s).Error
+	})
 }
 
 func (r *StoryRepository) List() ([]dstory.Story, error) {
@@ -45,6 +53,19 @@ func (r *StoryRepository) UpdateByID(id uint64, story *dstory.Story) error {
 
 		if err := tx.Model(&dstory.StoryPage{}).Delete(&dstory.StoryPage{}, "story_id = ?", id).Error; err != nil {
 			return err
+		}
+
+		if ori.Image != nil && story.Image == nil {
+			image := ori.Image
+			if story.ImageID == nil {
+				image.ImageURL = ""
+			} else {
+				image.ImageURL = story.Image.ImageURL
+			}
+
+			if err := tx.Save(image).Error; err != nil {
+				return err
+			}
 		}
 
 		story.ID = id

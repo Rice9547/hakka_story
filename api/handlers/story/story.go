@@ -21,6 +21,7 @@ type (
 		ID          uint64 `json:"id"`
 		Title       string `json:"title"`
 		Description string `json:"description"`
+		CoverImage  string `json:"cover_image"`
 	}
 
 	FullStoryResponse struct {
@@ -34,11 +35,17 @@ func New(service sstory.Service) *Story {
 }
 
 func toResponse(story dstory.Story) StoryResponse {
-	return StoryResponse{
+	resp := StoryResponse{
 		ID:          story.ID,
 		Title:       story.Title,
 		Description: story.Description,
 	}
+
+	if story.Image != nil {
+		resp.CoverImage = story.Image.ImageURL
+	}
+
+	return resp
 }
 
 func toFullyResponse(story dstory.Story) FullStoryResponse {

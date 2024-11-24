@@ -366,6 +366,9 @@ const docTemplate = `{
         "hstory.FullStoryResponse": {
             "type": "object",
             "properties": {
+                "cover_image": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -403,6 +406,9 @@ const docTemplate = `{
         "hstory.StoryResponse": {
             "type": "object",
             "properties": {
+                "cover_image": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -441,6 +447,9 @@ const docTemplate = `{
                 "title"
             ],
             "properties": {
+                "cover_image": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },

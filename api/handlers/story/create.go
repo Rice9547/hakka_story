@@ -21,6 +21,7 @@ type (
 		Title       string              `json:"title" binding:"required"`
 		Description string              `json:"description" binding:"required"`
 		Pages       []UpsertPageRequest `json:"pages" binding:"required"`
+		CoverImage  string              `json:"cover_image"`
 	}
 )
 
@@ -32,6 +33,7 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 	story := &dstory.Story{
 		Title:       s.Title,
 		Description: s.Description,
+		Image:       &dstory.Image{ImageURL: s.CoverImage},
 	}
 
 	for _, page := range s.Pages {

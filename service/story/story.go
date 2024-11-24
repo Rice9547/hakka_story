@@ -20,7 +20,6 @@ func New(repo dstory.Repository) Service {
 }
 
 func (s *service) CreateStory(st *dstory.Story) error {
-	// TODO: check input
 	return s.repo.Save(st)
 }
 
