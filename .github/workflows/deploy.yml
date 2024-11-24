@@ -1,0 +1,52 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.1'
+
+      - uses: mscno/setup-goose@v1
+      - run: goose -dir ./migrations mysql "${{ secrets.DB_CONNECT }}" up
+
+      - name: Install swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+
+      - name: Generate Swagger documentation
+        run: swag init main.go
+
+      - name: Build the application
+        run: |
+          go mod tidy
+          go build -o hakka .
+
+      - name: Deploy to DigitalOcean
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          source: "./*"
+          target: "/root/hakka"
+
+      - name: Deploy and run the application
+        run: |
+          echo "${{ secrets.DO_SSH_PRIVATE_KEY }}" > temp_ssh_key
+          chmod 600 temp_ssh_key
+          ssh -o StrictHostKeyChecking=no -i temp_ssh_key ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} << 'EOF'
+            pkill -f hakka || true
+            nohup /root/hakka/hakka --config /root/hakka/config/config.yaml > /root/hakka/hakka.log 2>&1 &
+          EOF
+          rm -f temp_ssh_key
