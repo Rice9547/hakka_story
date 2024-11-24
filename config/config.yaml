@@ -1,10 +1,17 @@
 server:
-  url: http://localhost
-  port: 8080
+  url:
+  port:
 
 database:
-  host: "127.0.0.1"
-  port: 3306
-  username: ""
-  password: ""
-  name: ""
+  host:
+  port:
+  username:
+  password:
+  name:
+
+auth0:
+  domain:
+  audience:
+
+admin:
+  whitelist:

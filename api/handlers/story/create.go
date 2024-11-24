@@ -48,7 +48,7 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 // CreateStory godoc
 // @Summary      Create Story
 // @Description  Create Story
-// @Tags         admin stories
+// @Tags         admin story
 // @Accept       json
 // @Produce      json
 // @Param		 Authorization  header  string  true  "Bearer token"

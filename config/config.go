@@ -8,21 +8,32 @@ import (
 )
 
 type Config struct {
-	Server   ServerConfig
-	Database DatabaseConfig
+	Server   ServerConfig   `mapstructure:"server"`
+	Database DatabaseConfig `mapstructure:"database"`
+	Auth0    Auth0Config    `mapstructure:"auth0"`
+	Admin    AdminConfig    `mapstructure:"admin"`
 }
 
 type ServerConfig struct {
-	URL  string
-	Port int
+	URL  string `mapstructure:"url"`
+	Port int    `mapstructure:"port"`
 }
 
 type DatabaseConfig struct {
-	Host     string
-	Port     int
-	Username string
-	Password string
-	Name     string
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
+	Name     string `mapstructure:"name"`
+}
+
+type Auth0Config struct {
+	Domain   string `mapstructure:"domain"`
+	Audience string `mapstructure:"audience"`
+}
+
+type AdminConfig struct {
+	Whitelist []string `mapstructure:"whitelist"`
 }
 
 func LoadConfig(configPath string) (Config, error) {

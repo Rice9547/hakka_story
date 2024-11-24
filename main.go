@@ -6,13 +6,13 @@ import (
 	"log"
 
 	"github.com/rice9547/hakka_story/api/middlewares"
+	"github.com/rice9547/hakka_story/api/routers"
 	_ "github.com/rice9547/hakka_story/docs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"github.com/rice9547/hakka_story/api/routers"
 	"github.com/rice9547/hakka_story/config"
 	"github.com/rice9547/hakka_story/persistence/mysql"
 )
@@ -32,9 +32,14 @@ func main() {
 	}
 	defer db.Close()
 
+	mw := middlewares.NewAuthMiddlewares(cfg.Admin, cfg.Auth0)
 	router := gin.Default()
 	router.Use(middlewares.CORSMiddleware())
-	routers.InitRoutes(router, db)
+	apiRoute := router.Group("/api")
+	adminRoute := apiRoute.Group("/admin")
+	adminRoute.Use(mw.AuthMiddleware(), mw.AdminOnlyMiddleware())
+
+	routers.InitRoutes(apiRoute, adminRoute, db)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

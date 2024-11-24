@@ -16,6 +16,29 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/auth": {
+            "get": {
+                "description": "Get the admin status of the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin auth"
+                ],
+                "summary": "Check if the user is an admin",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/hauth.AuthResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/story": {
             "post": {
                 "description": "Create Story",
@@ -26,7 +49,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin stories"
+                    "admin story"
                 ],
                 "summary": "Create Story",
                 "parameters": [
@@ -97,7 +120,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin stories"
+                    "admin story"
                 ],
                 "summary": "Update Story",
                 "parameters": [
@@ -245,6 +268,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "hauth.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "isAdmin": {
+                    "type": "boolean"
+                }
+            }
+        },
         "hstory.FullStoryResponse": {
             "type": "object",
             "properties": {

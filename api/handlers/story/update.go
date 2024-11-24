@@ -13,7 +13,7 @@ import (
 // UpdateStory godoc
 // @Summary      Update Story
 // @Description  Update Story by ID
-// @Tags         admin stories
+// @Tags         admin story
 // @Accept       json
 // @Produce      json
 // @Param		 Authorization  header  string  true  "Bearer token"
