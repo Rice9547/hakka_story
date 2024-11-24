@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/rice9547/hakka_story/api/middlewares"
-	"github.com/rice9547/hakka_story/api/routers"
-	_ "github.com/rice9547/hakka_story/docs"
-
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	"github.com/rice9547/hakka_story/api/middlewares"
+	"github.com/rice9547/hakka_story/api/routers"
 	"github.com/rice9547/hakka_story/config"
+	_ "github.com/rice9547/hakka_story/docs"
+	"github.com/rice9547/hakka_story/lib/uploader"
 	"github.com/rice9547/hakka_story/persistence/mysql"
 )
 
@@ -32,6 +32,12 @@ func main() {
 	}
 	defer db.Close()
 
+	s3Client, err := uploader.NewS3Client(cfg.ImageUpload)
+	if err != nil {
+		panic(fmt.Errorf("failed to create S3 client: %v", err))
+	}
+	imageUploader := uploader.New(cfg.ImageUpload, s3Client)
+
 	mw := middlewares.NewAuthMiddlewares(cfg.Auth0)
 	router := gin.Default()
 	router.Use(middlewares.CORSMiddleware())
@@ -39,7 +45,7 @@ func main() {
 	adminRoute := apiRoute.Group("/admin")
 	adminRoute.Use(mw.AuthMiddleware(), mw.AdminOnlyMiddleware())
 
-	routers.InitRoutes(apiRoute, adminRoute, db)
+	routers.InitRoutes(apiRoute, adminRoute, db, imageUploader)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

@@ -14,6 +14,9 @@ var (
 	ErrInternal     = errors.New("internal server error")
 
 	ErrStoryNotFound = errors.New("story not found")
+
+	ErrUnsupportedFileType = errors.New("unsupported file type")
+	ErrFailedToUploadImage = errors.New("failed to upload image")
 )
 
 type AppError struct {

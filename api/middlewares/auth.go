@@ -36,8 +36,6 @@ func NewAuthMiddlewares(auth0Conf config.Auth0Config) *AuthMiddlewares {
 }
 
 func (c *CustomClaims) Validate(ctx context.Context) error {
-	fmt.Printf("Validating custom claims: %+v\n", c)
-
 	if c.Email == "" {
 		return fmt.Errorf("email is required")
 	}

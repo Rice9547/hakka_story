@@ -12,3 +12,10 @@ database:
 auth0:
   domain:
   audience:
+
+image_upload:
+  endpoint:
+  bucket:
+  region:
+  access_key:
+  secret_key:
