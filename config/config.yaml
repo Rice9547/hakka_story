@@ -13,9 +13,10 @@ auth0:
   domain:
   audience:
 
-image_upload:
+upload:
   endpoint:
-  bucket:
+  image_bucket:
+  audio_bucket:
   region:
   access_key:
   secret_key:

@@ -48,8 +48,16 @@ func NewS3Client(cfg hakka_config.SpaceConfig) (*s3.Client, error) {
 }
 
 func (c *Client) UploadImage(ctx context.Context, file io.Reader, filename, contentType string) (string, error) {
+	return c.upload(ctx, file, c.conf.ImageBucket, filename, contentType)
+}
+
+func (c *Client) UploadAudio(ctx context.Context, file io.Reader, filename, contentType string) (string, error) {
+	return c.upload(ctx, file, c.conf.AudioBucket, filename, contentType)
+}
+
+func (c *Client) upload(ctx context.Context, file io.Reader, bucket, filename, contentType string) (string, error) {
 	input := &s3.PutObjectInput{
-		Bucket:      aws.String(c.conf.Bucket),
+		Bucket:      aws.String(bucket),
 		Key:         aws.String(filename),
 		Body:        file,
 		ContentType: aws.String(contentType),
@@ -61,6 +69,6 @@ func (c *Client) UploadImage(ctx context.Context, file io.Reader, filename, cont
 		return "", fmt.Errorf("upload image failed: %v", err)
 	}
 
-	url := fmt.Sprintf("%s/%s/%s", c.conf.Endpoint, c.conf.Bucket, filename)
+	url := fmt.Sprintf("%s/%s/%s", c.conf.Endpoint, bucket, filename)
 	return url, nil
 }

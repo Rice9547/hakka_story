@@ -16,7 +16,7 @@ var (
 	ErrStoryNotFound = errors.New("story not found")
 
 	ErrUnsupportedFileType = errors.New("unsupported file type")
-	ErrFailedToUploadImage = errors.New("failed to upload image")
+	ErrFailedToUploadFile  = errors.New("failed to upload file")
 )
 
 type AppError struct {

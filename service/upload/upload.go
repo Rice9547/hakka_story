@@ -27,7 +27,19 @@ func (s *UploadService) UploadImage(ctx context.Context, file multipart.File, he
 
 	url, err := s.repo.UploadImage(ctx, file, filename, contentType)
 	if err != nil {
-		return "", errors.ErrFailedToUploadImage
+		return "", errors.ErrFailedToUploadFile
+	}
+
+	return url, nil
+}
+
+func (s *UploadService) UploadAudio(ctx context.Context, file multipart.File, header *multipart.FileHeader) (string, error) {
+	contentType := header.Header.Get("Content-Type")
+	filename := uuid.New().String() + filepath.Ext(header.Filename)
+
+	url, err := s.repo.UploadAudio(ctx, file, filename, contentType)
+	if err != nil {
+		return "", errors.ErrFailedToUploadFile
 	}
 
 	return url, nil

@@ -32,11 +32,11 @@ func main() {
 	}
 	defer db.Close()
 
-	s3Client, err := uploader.NewS3Client(cfg.ImageUpload)
+	s3Client, err := uploader.NewS3Client(cfg.Upload)
 	if err != nil {
 		panic(fmt.Errorf("failed to create S3 client: %v", err))
 	}
-	imageUploader := uploader.New(cfg.ImageUpload, s3Client)
+	uploader := uploader.New(cfg.Upload, s3Client)
 
 	mw := middlewares.NewAuthMiddlewares(cfg.Auth0)
 	router := gin.Default()
@@ -45,7 +45,7 @@ func main() {
 	adminRoute := apiRoute.Group("/admin")
 	adminRoute.Use(mw.AuthMiddleware(), mw.AdminOnlyMiddleware())
 
-	routers.InitRoutes(apiRoute, adminRoute, db, imageUploader)
+	routers.InitRoutes(apiRoute, adminRoute, db, uploader)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

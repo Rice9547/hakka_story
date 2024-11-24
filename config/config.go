@@ -8,10 +8,10 @@ import (
 )
 
 type Config struct {
-	Server      ServerConfig   `mapstructure:"server"`
-	Database    DatabaseConfig `mapstructure:"database"`
-	Auth0       Auth0Config    `mapstructure:"auth0"`
-	ImageUpload SpaceConfig    `mapstructure:"image_upload"`
+	Server   ServerConfig   `mapstructure:"server"`
+	Database DatabaseConfig `mapstructure:"database"`
+	Auth0    Auth0Config    `mapstructure:"auth0"`
+	Upload   SpaceConfig    `mapstructure:"upload"`
 }
 
 type ServerConfig struct {
@@ -33,11 +33,12 @@ type Auth0Config struct {
 }
 
 type SpaceConfig struct {
-	Endpoint  string `mapstructure:"endpoint"`
-	Bucket    string `mapstructure:"bucket"`
-	Region    string `mapstructure:"region"`
-	AccessKey string `mapstructure:"access_key"`
-	SecretKey string `mapstructure:"secret_key"`
+	Endpoint    string `mapstructure:"endpoint"`
+	ImageBucket string `mapstructure:"image_bucket"`
+	AudioBucket string `mapstructure:"audio_bucket"`
+	Region      string `mapstructure:"region"`
+	AccessKey   string `mapstructure:"access_key"`
+	SecretKey   string `mapstructure:"secret_key"`
 }
 
 func LoadConfig(configPath string) (Config, error) {
