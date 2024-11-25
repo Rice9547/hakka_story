@@ -10,11 +10,18 @@ type (
 		service sstory.Service
 	}
 
+	AudioResponse struct {
+		ID       uint64 `json:"id"`
+		AudioURL string `json:"audio_url"`
+		Dialect  string `json:"dialect"`
+	}
+
 	PageResponse struct {
-		ID           uint64 `json:"id"`
-		Number       int    `json:"page_number"`
-		ContentCN    string `json:"content_cn"`
-		ContentHakka string `json:"content_hakka"`
+		ID           uint64          `json:"id"`
+		Number       int             `json:"page_number"`
+		ContentCN    string          `json:"content_cn"`
+		ContentHakka string          `json:"content_hakka"`
+		Audios       []AudioResponse `json:"audios"`
 	}
 
 	StoryResponse struct {
@@ -56,7 +63,16 @@ func toFullyResponse(story dstory.Story) FullStoryResponse {
 			Number:       page.PageNumber,
 			ContentCN:    page.ContentCN,
 			ContentHakka: page.ContentHakka,
+			Audios:       make([]AudioResponse, 0, len(page.AudioFiles)),
 		})
+
+		for _, audio := range page.AudioFiles {
+			pages[len(pages)-1].Audios = append(pages[len(pages)-1].Audios, AudioResponse{
+				ID:       audio.ID,
+				AudioURL: audio.AudioURL,
+				Dialect:  audio.Dialect,
+			})
+		}
 	}
 
 	return FullStoryResponse{

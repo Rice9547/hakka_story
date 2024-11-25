@@ -11,10 +11,16 @@ import (
 )
 
 type (
+	UpsertAudioRequest struct {
+		AudioURL string `json:"audio_url" binding:"required"`
+		Dialect  string `json:"dialect" binding:"required"`
+	}
+
 	UpsertPageRequest struct {
-		Number       int    `json:"page_number" binding:"required"`
-		ContentCN    string `json:"content_cn" binding:"required"`
-		ContentHakka string `json:"content_hakka" binding:"required"`
+		Number       int                  `json:"page_number" binding:"required"`
+		ContentCN    string               `json:"content_cn" binding:"required"`
+		ContentHakka string               `json:"content_hakka" binding:"required"`
+		Audios       []UpsertAudioRequest `json:"audios"`
 	}
 
 	UpsertStoryRequest struct {
@@ -41,7 +47,15 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 			PageNumber:   page.Number,
 			ContentCN:    page.ContentCN,
 			ContentHakka: page.ContentHakka,
+			AudioFiles:   make([]dstory.AudioFile, 0, len(page.Audios)),
 		})
+
+		for _, audio := range page.Audios {
+			story.Pages[len(story.Pages)-1].AudioFiles = append(story.Pages[len(story.Pages)-1].AudioFiles, dstory.AudioFile{
+				AudioURL: audio.AudioURL,
+				Dialect:  audio.Dialect,
+			})
+		}
 	}
 
 	return story, nil
