@@ -7,14 +7,9 @@ import (
 
 	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
-	supload "github.com/rice9547/hakka_story/service/upload"
 )
 
 type (
-	Audio struct {
-		service supload.UploadService
-	}
-
 	UploadAudioRequest struct {
 		Audio string `form:"audio" binding:"required"`
 	}
@@ -23,12 +18,6 @@ type (
 		URL string `json:"url"`
 	}
 )
-
-func New(service *supload.UploadService) *Audio {
-	return &Audio{
-		service: *service,
-	}
-}
 
 // UploadAudio godoc
 // @Summary      Upload Audio
@@ -50,7 +39,7 @@ func (h *Audio) Upload(c *gin.Context) {
 	}
 	defer file.Close()
 
-	url, err := h.service.UploadAudio(c, file, header)
+	url, err := h.uploader.UploadAudio(c, file, header)
 	if err != nil {
 		if errors.Is(err, errors.ErrUnsupportedFileType) {
 			response.Error(c, http.StatusBadRequest, "unsupported file type")

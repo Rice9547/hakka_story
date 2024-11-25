@@ -27,7 +27,7 @@ func InitRoutes(
 
 	storyHandler := hstory.New(storyService)
 	imageHandler := himage.New(uploadService, openaiClient)
-	audioHandler := haudio.New(uploadService)
+	audioHandler := haudio.New(uploadService, openaiClient)
 
 	apiRoute.GET("/story", storyHandler.List)
 	apiRoute.GET("/story/:id", storyHandler.Get)
@@ -37,6 +37,7 @@ func InitRoutes(
 	adminRoute.POST("/image/upload", imageHandler.Upload)
 	adminRoute.POST("/image/generate", imageHandler.Generate)
 	adminRoute.POST("/audio/upload", audioHandler.Upload)
+	adminRoute.POST("/audio/generate", audioHandler.Generate)
 
 	adminStoryRoutes := adminRoute.Group("/story")
 	adminStoryRoutes.POST("", storyHandler.Create)
