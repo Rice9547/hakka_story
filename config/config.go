@@ -16,8 +16,9 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	URL  string `mapstructure:"url"`
-	Port int    `mapstructure:"port"`
+	URL          string   `mapstructure:"url"`
+	Port         int      `mapstructure:"port"`
+	AllowOrigins []string `mapstructure:"allow_origins"`
 }
 
 type DatabaseConfig struct {

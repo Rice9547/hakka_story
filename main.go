@@ -43,7 +43,7 @@ func main() {
 
 	mw := middlewares.NewAuthMiddlewares(cfg.Auth0)
 	router := gin.Default()
-	router.Use(middlewares.CORSMiddleware())
+	router.Use(middlewares.CORSMiddleware(cfg.Server.AllowOrigins))
 	apiRoute := router.Group("/api")
 	adminRoute := apiRoute.Group("/admin")
 	adminRoute.Use(mw.AuthMiddleware(), mw.AdminOnlyMiddleware())

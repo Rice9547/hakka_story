@@ -1,6 +1,9 @@
 server:
-  url:
-  port:
+  url: http://localhost
+  port: 8080
+  allow_origins:
+    - "https://admin.hakka.rice9547.org"
+    - "http://localhost:3000"
 
 database:
   host:
