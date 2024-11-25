@@ -7,6 +7,7 @@ import (
 	hauth "github.com/rice9547/hakka_story/api/handlers/auth"
 	himage "github.com/rice9547/hakka_story/api/handlers/image"
 	hstory "github.com/rice9547/hakka_story/api/handlers/story"
+	htranslate "github.com/rice9547/hakka_story/api/handlers/translate"
 	"github.com/rice9547/hakka_story/lib/openai"
 	"github.com/rice9547/hakka_story/lib/uploader"
 	"github.com/rice9547/hakka_story/persistence/mysql"
@@ -28,6 +29,7 @@ func InitRoutes(
 	storyHandler := hstory.New(storyService)
 	imageHandler := himage.New(uploadService, openaiClient)
 	audioHandler := haudio.New(uploadService, openaiClient)
+	translateHandler := htranslate.New(openaiClient)
 
 	apiRoute.GET("/story", storyHandler.List)
 	apiRoute.GET("/story/:id", storyHandler.Get)
@@ -38,6 +40,7 @@ func InitRoutes(
 	adminRoute.POST("/image/generate", imageHandler.Generate)
 	adminRoute.POST("/audio/upload", audioHandler.Upload)
 	adminRoute.POST("/audio/generate", audioHandler.Generate)
+	adminRoute.POST("/translate/hakka", translateHandler.TranslateHakka)
 
 	adminStoryRoutes := adminRoute.Group("/story")
 	adminStoryRoutes.POST("", storyHandler.Create)
