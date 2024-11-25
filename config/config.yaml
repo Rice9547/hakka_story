@@ -20,3 +20,6 @@ upload:
   region:
   access_key:
   secret_key:
+
+openai:
+  api_key:

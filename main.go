@@ -13,6 +13,7 @@ import (
 	"github.com/rice9547/hakka_story/api/routers"
 	"github.com/rice9547/hakka_story/config"
 	_ "github.com/rice9547/hakka_story/docs"
+	"github.com/rice9547/hakka_story/lib/openai"
 	"github.com/rice9547/hakka_story/lib/uploader"
 	"github.com/rice9547/hakka_story/persistence/mysql"
 )
@@ -38,6 +39,8 @@ func main() {
 	}
 	uploader := uploader.New(cfg.Upload, s3Client)
 
+	openaiClient := openai.New(cfg.OpenAI)
+
 	mw := middlewares.NewAuthMiddlewares(cfg.Auth0)
 	router := gin.Default()
 	router.Use(middlewares.CORSMiddleware())
@@ -45,7 +48,7 @@ func main() {
 	adminRoute := apiRoute.Group("/admin")
 	adminRoute.Use(mw.AuthMiddleware(), mw.AdminOnlyMiddleware())
 
-	routers.InitRoutes(apiRoute, adminRoute, db, uploader)
+	routers.InitRoutes(apiRoute, adminRoute, db, uploader, openaiClient)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

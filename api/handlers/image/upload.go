@@ -7,14 +7,9 @@ import (
 
 	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
-	supload "github.com/rice9547/hakka_story/service/upload"
 )
 
 type (
-	Image struct {
-		service supload.UploadService
-	}
-
 	UploadImageRequest struct {
 		Image string `form:"image" binding:"required"`
 	}
@@ -23,12 +18,6 @@ type (
 		URL string `json:"url"`
 	}
 )
-
-func New(service *supload.UploadService) *Image {
-	return &Image{
-		service: *service,
-	}
-}
 
 // UploadImage godoc
 // @Summary      Upload Image
@@ -50,7 +39,7 @@ func (h *Image) Upload(c *gin.Context) {
 	}
 	defer file.Close()
 
-	url, err := h.service.UploadImage(c, file, header)
+	url, err := h.uploader.UploadImage(c, file, header)
 	if err != nil {
 		if errors.Is(err, errors.ErrUnsupportedFileType) {
 			response.Error(c, http.StatusBadRequest, "unsupported file type")

@@ -16,6 +16,74 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/audio/upload": {
+            "post": {
+                "description": "Upload Audio",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "admin audio"
+                ],
+                "summary": "Upload Audio",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "音檔",
+                        "name": "audio",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/haudio.UploadAudioRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/haudio.UploadAudioResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/auth": {
             "get": {
                 "description": "Get the admin status of the user",
@@ -34,6 +102,77 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/hauth.AuthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/image/generate": {
+            "post": {
+                "description": "Generate an image from a text prompt",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin image"
+                ],
+                "summary": "Generate Image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Text prompt",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/himage.GenerateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/himage.GenerateResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
                         }
                     }
                 }
@@ -336,11 +475,46 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "haudio.UploadAudioRequest": {
+            "type": "object",
+            "required": [
+                "audio"
+            ],
+            "properties": {
+                "audio": {
+                    "type": "string"
+                }
+            }
+        },
+        "haudio.UploadAudioResponse": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "hauth.AuthResponse": {
             "type": "object",
             "properties": {
                 "isAdmin": {
                     "type": "boolean"
+                }
+            }
+        },
+        "himage.GenerateRequest": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string"
+                }
+            }
+        },
+        "himage.GenerateResponse": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
                 }
             }
         },
@@ -360,6 +534,20 @@ const docTemplate = `{
             "properties": {
                 "url": {
                     "type": "string"
+                }
+            }
+        },
+        "hstory.AudioResponse": {
+            "type": "object",
+            "properties": {
+                "audio_url": {
+                    "type": "string"
+                },
+                "dialect": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 }
             }
         },
@@ -389,6 +577,12 @@ const docTemplate = `{
         "hstory.PageResponse": {
             "type": "object",
             "properties": {
+                "audios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hstory.AudioResponse"
+                    }
+                },
                 "content_cn": {
                     "type": "string"
                 },
@@ -420,6 +614,21 @@ const docTemplate = `{
                 }
             }
         },
+        "hstory.UpsertAudioRequest": {
+            "type": "object",
+            "required": [
+                "audio_url",
+                "dialect"
+            ],
+            "properties": {
+                "audio_url": {
+                    "type": "string"
+                },
+                "dialect": {
+                    "type": "string"
+                }
+            }
+        },
         "hstory.UpsertPageRequest": {
             "type": "object",
             "required": [
@@ -428,6 +637,12 @@ const docTemplate = `{
                 "page_number"
             ],
             "properties": {
+                "audios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hstory.UpsertAudioRequest"
+                    }
+                },
                 "content_cn": {
                     "type": "string"
                 },

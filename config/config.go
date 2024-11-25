@@ -12,6 +12,7 @@ type Config struct {
 	Database DatabaseConfig `mapstructure:"database"`
 	Auth0    Auth0Config    `mapstructure:"auth0"`
 	Upload   SpaceConfig    `mapstructure:"upload"`
+	OpenAI   OpenAI         `mapstructure:"openai"`
 }
 
 type ServerConfig struct {
@@ -39,6 +40,10 @@ type SpaceConfig struct {
 	Region      string `mapstructure:"region"`
 	AccessKey   string `mapstructure:"access_key"`
 	SecretKey   string `mapstructure:"secret_key"`
+}
+
+type OpenAI struct {
+	APIKey string `mapstructure:"api_key"`
 }
 
 func LoadConfig(configPath string) (Config, error) {
