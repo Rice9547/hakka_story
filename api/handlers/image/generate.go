@@ -19,7 +19,7 @@ type (
 	}
 )
 
-// Generate godoc
+// GenerateImage godoc
 // @Summary      Generate Image
 // @Description  Generate an image from a text prompt
 // @Tags         admin image

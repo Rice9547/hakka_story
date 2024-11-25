@@ -22,10 +22,10 @@ type (
 	}
 )
 
-// Generate godoc
+// GenerateAudio godoc
 // @Summary      Generate Audio
 // @Description  Generate an audio from a text
-// @Tags         admin image
+// @Tags         admin audio
 // @Accept       json
 // @Produce      json
 // @Param        Authorization  header  string  true  "Bearer token"
