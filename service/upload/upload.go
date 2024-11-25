@@ -22,7 +22,7 @@ func New(repo dupload.Repository) *UploadService {
 	}
 }
 
-func (s *UploadService) UploadImage(ctx context.Context, file multipart.File, header *multipart.FileHeader) (string, error) {
+func (s *UploadService) UploadImage(ctx context.Context, file io.Reader, header *multipart.FileHeader) (string, error) {
 	contentType := header.Header.Get("Content-Type")
 	filename := uuid.New().String() + filepath.Ext(header.Filename)
 

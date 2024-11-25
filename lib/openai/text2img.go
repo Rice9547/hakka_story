@@ -22,7 +22,7 @@ type ImageResponse struct {
 	} `json:"data"`
 }
 
-func (c *Client) Text2Image(prompt string) (string, error) {
+func (c *Client) Text2Image(prompt string) (string, []byte, error) {
 	requestData := ImageRequest{
 		Prompt: prompt,
 		N:      1,
@@ -32,7 +32,7 @@ func (c *Client) Text2Image(prompt string) (string, error) {
 	jsonData, _ := json.Marshal(requestData)
 	req, err := http.NewRequest("POST", imageApiUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
 	req.Header.Set("Content-Type", "application/json")
@@ -40,24 +40,44 @@ func (c *Client) Text2Image(prompt string) (string, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 	defer resp.Body.Close()
 
 	body, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("failed to generate text: %s", body)
+		return "", nil, fmt.Errorf("failed to generate text: %s", body)
 	}
 
 	var response ImageResponse
 	if err = json.Unmarshal(body, &response); err != nil {
-		return "", err
+		return "", nil, err
 	}
 
-	if len(response.Data) > 0 {
-		return response.Data[0].URL, nil
-	} else {
-		return "", fmt.Errorf("no image url found")
+	if len(response.Data) == 0 {
+		return "", nil, fmt.Errorf("no image url found")
 	}
+
+	imageData, err := c.downloadImage(response.Data[0].URL)
+	if err != nil {
+		return "", nil, err
+	}
+
+	return response.Data[0].URL, imageData, nil
+}
+
+func (c *Client) downloadImage(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("download image failed: %s", body)
+	}
+
+	return io.ReadAll(resp.Body)
 }

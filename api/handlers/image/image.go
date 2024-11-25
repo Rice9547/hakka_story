@@ -11,7 +11,7 @@ type Image struct {
 }
 
 type imageGenerator interface {
-	Text2Image(prompt string) (string, error)
+	Text2Image(prompt string) (string, []byte, error)
 }
 
 func New(uploader *supload.UploadService, generator *openai.Client) *Image {
