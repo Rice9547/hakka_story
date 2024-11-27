@@ -38,6 +38,7 @@ func InitRoutes(
 
 	apiRoute.GET("/story", storyHandler.List)
 	apiRoute.GET("/story/:id", storyHandler.Get)
+	apiRoute.GET("/category", categoryHandler.List)
 
 	adminRoute.GET("/auth", hauth.Auth)
 

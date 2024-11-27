@@ -20,8 +20,10 @@ func (r *CategoryRepository) Save(c *dcategory.Category) error {
 
 func (r *CategoryRepository) ListByKeyword(keyword string) ([]dcategory.Category, error) {
 	categories := make([]dcategory.Category, 0)
-	// TODO: List categories by keyword
-	return categories, nil
+	err := r.DB.Model(&dcategory.Category{}).
+		Where("name LIKE ?", "%"+keyword+"%").
+		Find(&categories).Error
+	return categories, err
 }
 
 func (r *CategoryRepository) UpdateByID(id uint64, category *dcategory.Category) error {
