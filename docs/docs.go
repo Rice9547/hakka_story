@@ -524,6 +524,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/categories": {
+            "post": {
+                "description": "Create a new category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin categories"
+                ],
+                "summary": "Create a new category",
+                "parameters": [
+                    {
+                        "description": "Category to create",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/hcategory.UpsertRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dcategory.Category"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
         "/story": {
             "get": {
                 "description": "Get all stories",
@@ -611,6 +657,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dcategory.Category": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "haudio.GenerateRequest": {
             "type": "object",
             "properties": {
@@ -651,6 +708,14 @@ const docTemplate = `{
             "properties": {
                 "isAdmin": {
                     "type": "boolean"
+                }
+            }
+        },
+        "hcategory.UpsertRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
                 }
             }
         },
