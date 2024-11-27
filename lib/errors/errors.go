@@ -13,7 +13,8 @@ var (
 	ErrInvalidInput = errors.New("invalid input")
 	ErrInternal     = errors.New("internal server error")
 
-	ErrStoryNotFound = errors.New("story not found")
+	ErrStoryNotFound    = errors.New("story not found")
+	ErrCategoryNotFound = errors.New("category not found")
 
 	ErrUnsupportedFileType = errors.New("unsupported file type")
 	ErrFailedToUploadFile  = errors.New("failed to upload file")
