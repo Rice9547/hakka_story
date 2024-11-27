@@ -15,8 +15,7 @@ func NewCategory(client *Client) dcategory.Repository {
 }
 
 func (r *CategoryRepository) Save(c *dcategory.Category) error {
-	// TODO: Save category
-	return nil
+	return r.DB.Save(c).Error
 }
 
 func (r *CategoryRepository) ListByKeyword(keyword string) ([]dcategory.Category, error) {
