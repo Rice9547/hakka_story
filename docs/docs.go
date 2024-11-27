@@ -570,6 +570,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/category": {
+            "get": {
+                "description": "Get list of categories by name",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "List categories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category name",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/definitions/response.Response"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "data": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/definitions/hcategory.Category"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
         "/story": {
             "get": {
                 "description": "Get all stories",
@@ -710,6 +762,9 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        },
+        "hcategory.Category": {
+            "type": "object"
         },
         "hcategory.UpsertRequest": {
             "type": "object",
