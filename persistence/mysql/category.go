@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 
 	dcategory "github.com/rice9547/hakka_story/domain/category"
+	"github.com/rice9547/hakka_story/lib/errors"
 )
 
 type CategoryRepository struct {
@@ -27,6 +28,16 @@ func (r *CategoryRepository) ListByKeyword(keyword string) ([]dcategory.Category
 }
 
 func (r *CategoryRepository) UpdateByID(id uint64, category *dcategory.Category) error {
-	// TODO: Update category by ID
+	result := r.DB.Model(&dcategory.Category{}).
+		Where("id = ?", id).
+		Update("name", category.Name)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.ErrCategoryNotFound
+	}
+
 	return nil
 }
