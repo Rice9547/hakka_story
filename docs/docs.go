@@ -459,6 +459,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/story/{id}": {
+            "delete": {
+                "description": "Delete a story by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin story"
+                ],
+                "summary": "Delete a story by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Story ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/translate/hakka": {
             "post": {
                 "description": "Translate a given text to Hakka language",
@@ -997,6 +1047,17 @@ const docTemplate = `{
                 }
             }
         },
+        "hstory.UpsertCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "hstory.UpsertPageRequest": {
             "type": "object",
             "required": [
@@ -1030,6 +1091,12 @@ const docTemplate = `{
                 "title"
             ],
             "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hstory.UpsertCategoryRequest"
+                    }
+                },
                 "cover_image": {
                     "type": "string"
                 },

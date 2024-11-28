@@ -51,6 +51,7 @@ func InitRoutes(
 	adminStoryRoutes := adminRoute.Group("/story")
 	adminStoryRoutes.POST("", storyHandler.Create)
 	adminStoryRoutes.PUT("/:id", storyHandler.Update)
+	adminStoryRoutes.DELETE("/:id", storyHandler.Delete)
 
 	adminCategoryRoutes := adminRoute.Group("/category")
 	adminCategoryRoutes.POST("", categoryHandler.Create)

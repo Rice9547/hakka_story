@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm/clause"
 
 	dstory "github.com/rice9547/hakka_story/domain/story"
+	"github.com/rice9547/hakka_story/lib/errors"
 )
 
 type StoryRepository struct {
@@ -63,4 +64,12 @@ func (r *StoryRepository) UpdateByID(id uint64, story *dstory.Story) error {
 
 		return tx.Save(story).Error
 	})
+}
+
+func (r *StoryRepository) DeleteByID(id uint64) error {
+	err := r.DB.Delete(&dstory.Story{}, id).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return errors.ErrStoryNotFound
+	}
+	return err
 }
