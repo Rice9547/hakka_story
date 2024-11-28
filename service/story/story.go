@@ -7,6 +7,7 @@ import (
 type Service interface {
 	CreateStory(s *dstory.Story) error
 	ListStory() ([]dstory.Story, error)
+	ListStoryByCategories(categoryNames []string) ([]dstory.Story, error)
 	GetStory(id uint64) (*dstory.Story, error)
 	UpdateByID(id uint64, s *dstory.Story) error
 }
@@ -25,6 +26,10 @@ func (s *service) CreateStory(st *dstory.Story) error {
 
 func (s *service) ListStory() ([]dstory.Story, error) {
 	return s.repo.List()
+}
+
+func (s *service) ListStoryByCategories(categoryNames []string) ([]dstory.Story, error) {
+	return s.repo.FilterByCategories(categoryNames)
 }
 
 func (s *service) GetStory(id uint64) (*dstory.Story, error) {

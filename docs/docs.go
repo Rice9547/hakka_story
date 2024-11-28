@@ -700,6 +700,17 @@ const docTemplate = `{
                     "stories"
                 ],
                 "summary": "List stories",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Category names",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -891,9 +902,26 @@ const docTemplate = `{
                 }
             }
         },
+        "hstory.CategoryResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "hstory.FullStoryResponse": {
             "type": "object",
             "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hstory.CategoryResponse"
+                    }
+                },
                 "cover_image": {
                     "type": "string"
                 },
@@ -940,6 +968,12 @@ const docTemplate = `{
         "hstory.StoryResponse": {
             "type": "object",
             "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hstory.CategoryResponse"
+                    }
+                },
                 "cover_image": {
                     "type": "string"
                 },

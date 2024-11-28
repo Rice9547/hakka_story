@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	dstory "github.com/rice9547/hakka_story/domain/story"
 	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
@@ -20,11 +21,23 @@ type (
 // @Description  Get all stories
 // @Tags         stories
 // @Produce      json
+// @Param        name  query    []string  false  "Category names"
 // @Success      200  {object}  response.Response{data=StoryResponse}
 // @Failure      500  {object}  response.ResponseBase
 // @Router       /story [get]
 func (h *Story) List(c *gin.Context) {
-	stories, err := h.service.ListStory()
+	categoryNames := c.QueryArray("categories")
+
+	var (
+		stories []dstory.Story
+		err     error
+	)
+	if len(categoryNames) == 0 {
+		stories, err = h.service.ListStory()
+	} else {
+		stories, err = h.service.ListStoryByCategories(categoryNames)
+	}
+
 	if err != nil {
 		errors.ErrorHandler(c, errors.NewAppError(http.StatusInternalServerError, err, "Failed to retrieve stories"))
 		return

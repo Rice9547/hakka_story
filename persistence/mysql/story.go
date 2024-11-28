@@ -25,6 +25,16 @@ func (r *StoryRepository) List() ([]dstory.Story, error) {
 	return stories, err
 }
 
+func (r *StoryRepository) FilterByCategories(categoryNames []string) ([]dstory.Story, error) {
+	stories := make([]dstory.Story, 0)
+	err := r.DB.Preload(clause.Associations).
+		Joins("JOIN story_to_category ON story_to_category.story_id = stories.id").
+		Joins("JOIN categories ON story_to_category.category_id = categories.id").
+		Where("categories.name IN (?)", categoryNames).
+		Find(&stories).Error
+	return stories, err
+}
+
 func (r *StoryRepository) GetByID(id uint64) (*dstory.Story, error) {
 	story := &dstory.Story{}
 	err := r.DB.Model(&story).Preload(clause.Associations).Preload("Pages.AudioFiles").First(&story, id).Error
