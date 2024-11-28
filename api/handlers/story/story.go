@@ -24,11 +24,17 @@ type (
 		Audios       []AudioResponse `json:"audios"`
 	}
 
+	CategoryResponse struct {
+		ID   uint64 `json:"id"`
+		Name string `json:"name"`
+	}
+
 	StoryResponse struct {
-		ID          uint64 `json:"id"`
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		CoverImage  string `json:"cover_image"`
+		ID          uint64             `json:"id"`
+		Title       string             `json:"title"`
+		Description string             `json:"description"`
+		CoverImage  string             `json:"cover_image"`
+		Categories  []CategoryResponse `json:"categories"`
 	}
 
 	FullStoryResponse struct {
@@ -50,6 +56,14 @@ func toResponse(story dstory.Story) StoryResponse {
 
 	if story.Image != nil {
 		resp.CoverImage = story.Image.ImageURL
+	}
+
+	resp.Categories = make([]CategoryResponse, 0, len(story.Categories))
+	for _, category := range story.Categories {
+		resp.Categories = append(resp.Categories, CategoryResponse{
+			ID:   category.ID,
+			Name: category.Name,
+		})
 	}
 
 	return resp
