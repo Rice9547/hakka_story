@@ -7,6 +7,7 @@ type (
 		Create(c *dcategory.Category) (*dcategory.Category, error)
 		ListByName(name string) ([]dcategory.Category, error)
 		Update(id uint64, name string) (*dcategory.Category, error)
+		DeleteByID(id uint64) error
 	}
 
 	service struct {
@@ -47,4 +48,8 @@ func (s *service) Update(id uint64, name string) (*dcategory.Category, error) {
 	}
 
 	return category, nil
+}
+
+func (s *service) DeleteByID(id uint64) error {
+	return s.repo.DeleteByID(id)
 }

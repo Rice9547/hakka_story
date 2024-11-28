@@ -56,4 +56,5 @@ func InitRoutes(
 	adminCategoryRoutes := adminRoute.Group("/category")
 	adminCategoryRoutes.POST("", categoryHandler.Create)
 	adminCategoryRoutes.PUT("/:id", categoryHandler.Update)
+	adminCategoryRoutes.DELETE("/:id", categoryHandler.Delete)
 }

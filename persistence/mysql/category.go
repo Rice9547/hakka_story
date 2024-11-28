@@ -41,3 +41,16 @@ func (r *CategoryRepository) UpdateByID(id uint64, category *dcategory.Category)
 
 	return nil
 }
+
+func (r *CategoryRepository) DeleteByID(id uint64) error {
+	result := r.DB.Delete(&dcategory.Category{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.ErrCategoryNotFound
+	}
+
+	return nil
+}

@@ -12,7 +12,7 @@ import (
 // UpdateCategory godoc
 // @Summary      Update category
 // @Description  Update category by id
-// @Tags         categories
+// @Tags         admin categories
 // @Produce      json
 // @Param        id   path      int  true  "Category ID"
 // @Param        category  body  UpsertRequest  true  "Category data"
