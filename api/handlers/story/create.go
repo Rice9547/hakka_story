@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	dcategory "github.com/rice9547/hakka_story/domain/category"
 	dstory "github.com/rice9547/hakka_story/domain/story"
 	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
@@ -23,11 +24,17 @@ type (
 		Audios       []UpsertAudioRequest `json:"audios"`
 	}
 
+	UpsertCategoryRequest struct {
+		ID   uint64 `json:"id"`
+		Name string `json:"name"`
+	}
+
 	UpsertStoryRequest struct {
-		Title       string              `json:"title" binding:"required"`
-		Description string              `json:"description" binding:"required"`
-		Pages       []UpsertPageRequest `json:"pages" binding:"required"`
-		CoverImage  string              `json:"cover_image"`
+		Title       string                  `json:"title" binding:"required"`
+		Description string                  `json:"description" binding:"required"`
+		Pages       []UpsertPageRequest     `json:"pages" binding:"required"`
+		CoverImage  string                  `json:"cover_image"`
+		Categories  []UpsertCategoryRequest `json:"categories"`
 	}
 )
 
@@ -40,6 +47,8 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 		Title:       s.Title,
 		Description: s.Description,
 		Image:       &dstory.Image{ImageURL: s.CoverImage},
+		Pages:       make([]dstory.StoryPage, 0, len(s.Pages)),
+		Categories:  make([]dcategory.Category, 0, len(s.Categories)),
 	}
 
 	for _, page := range s.Pages {
@@ -56,6 +65,13 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 				Dialect:  audio.Dialect,
 			})
 		}
+	}
+
+	for _, category := range s.Categories {
+		story.Categories = append(story.Categories, dcategory.Category{
+			ID:   category.ID,
+			Name: category.Name,
+		})
 	}
 
 	return story, nil

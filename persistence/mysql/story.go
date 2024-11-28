@@ -37,13 +37,25 @@ func (r *StoryRepository) FilterByCategories(categoryNames []string) ([]dstory.S
 
 func (r *StoryRepository) GetByID(id uint64) (*dstory.Story, error) {
 	story := &dstory.Story{}
-	err := r.DB.Model(&story).Preload(clause.Associations).Preload("Pages.AudioFiles").First(&story, id).Error
+	err := r.DB.
+		Model(&story).
+		Preload(clause.Associations).
+		Preload("Pages.AudioFiles").
+		Preload("Categories", func(db *gorm.DB) *gorm.DB {
+			return db.Joins("JOIN story_to_category ON story_to_category.category_id = categories.id").
+				Order("story_to_category.id ASC")
+		}).
+		First(&story, id).Error
 	return story, err
 }
 
 func (r *StoryRepository) UpdateByID(id uint64, story *dstory.Story) error {
 	return r.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Delete(&dstory.StoryPage{}, "story_id = ?", id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&dstory.StoryToCategory{}, "story_id = ?", id).Error; err != nil {
 			return err
 		}
 

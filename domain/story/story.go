@@ -15,7 +15,7 @@ type Story struct {
 	Pages       []StoryPage          `gorm:"foreignKey:story_id;references:id"`
 	ImageID     *uint64              `gorm:"column:image_id"`
 	Image       *Image               `gorm:"foreignKey:image_id;references:id"`
-	Categories  []dcategory.Category `gorm:"many2many:story_to_category;foreignKey:id;joinForeignKey:story_id;References:id;joinReferences:category_id"`
+	Categories  []dcategory.Category `gorm:"many2many:story_to_category;foreignKey:id;joinForeignKey:story_id;References:id;joinReferences:category_id;gorm:ordered"`
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt
 }
@@ -41,6 +41,12 @@ type AudioFile struct {
 	AudioURL    string `gorm:"column:audio_url"`
 }
 
+type StoryToCategory struct {
+	StoryID    uint64 `gorm:"column:story_id"`
+	CategoryID uint64 `gorm:"column:category_id"`
+	CreatedAt  time.Time
+}
+
 func (Story) TableName() string {
 	return "stories"
 }
@@ -55,4 +61,8 @@ func (Image) TableName() string {
 
 func (AudioFile) TableName() string {
 	return "audio_files"
+}
+
+func (StoryToCategory) TableName() string {
+	return "story_to_category"
 }
