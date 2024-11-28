@@ -14,7 +14,7 @@ import (
 // @Tags         categories
 // @Produce      json
 // @Param        name  query     string  false  "Category name"
-// @Success      200   {array}   response.Response{data=[]Category}
+// @Success      200   {array}   response.Response{data=CategoryResponse}
 // @Failure      500   {object}  response.ResponseBase
 // @Router       /category [get]
 func (h *Category) List(c *gin.Context) {
@@ -25,5 +25,10 @@ func (h *Category) List(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, categories)
+	resp := make([]CategoryResponse, 0, len(categories))
+	for _, category := range categories {
+		resp = append(resp, toResponse(category))
+	}
+
+	response.Success(c, resp)
 }

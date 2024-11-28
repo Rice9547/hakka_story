@@ -552,7 +552,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dcategory.Category"
+                            "$ref": "#/definitions/hcategory.CategoryResponse"
                         }
                     },
                     "400": {
@@ -602,10 +602,7 @@ const docTemplate = `{
                                         "type": "object",
                                         "properties": {
                                             "data": {
-                                                "type": "array",
-                                                "items": {
-                                                    "$ref": "#/definitions/hcategory.Category"
-                                                }
+                                                "$ref": "#/definitions/hcategory.CategoryResponse"
                                             }
                                         }
                                     }
@@ -662,7 +659,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/hcategory.Category"
+                                            "$ref": "#/definitions/hcategory.CategoryResponse"
                                         }
                                     }
                                 }
@@ -788,17 +785,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dcategory.Category": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "haudio.GenerateRequest": {
             "type": "object",
             "properties": {
@@ -842,8 +828,16 @@ const docTemplate = `{
                 }
             }
         },
-        "hcategory.Category": {
-            "type": "object"
+        "hcategory.CategoryResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         },
         "hcategory.UpsertRequest": {
             "type": "object",

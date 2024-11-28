@@ -15,7 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param category body UpsertRequest true "Category to create"
-// @Success 200 {object} dcategory.Category
+// @Success 200 {object} CategoryResponse
 // @Failure 400 {object} response.ResponseBase
 // @Failure 500 {object} response.ResponseBase
 // @Router /categories [post]
@@ -32,5 +32,5 @@ func (h *Category) Create(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, category)
+	response.Success(c, toResponse(*category))
 }

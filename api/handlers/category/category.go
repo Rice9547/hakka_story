@@ -15,6 +15,11 @@ type (
 	UpsertRequest struct {
 		Name string `json:"name"`
 	}
+
+	CategoryResponse struct {
+		ID   uint64 `json:"id"`
+		Name string `json:"name"`
+	}
 )
 
 func New(service scategory.Service) *Category {
@@ -29,4 +34,11 @@ func (r *UpsertRequest) bind(c *gin.Context) (*dcategory.Category, error) {
 	return &dcategory.Category{
 		Name: r.Name,
 	}, nil
+}
+
+func toResponse(category dcategory.Category) CategoryResponse {
+	return CategoryResponse{
+		ID:   category.ID,
+		Name: category.Name,
+	}
 }

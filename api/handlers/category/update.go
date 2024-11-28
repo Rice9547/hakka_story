@@ -16,7 +16,7 @@ import (
 // @Produce      json
 // @Param        id   path      int  true  "Category ID"
 // @Param        category  body  UpsertRequest  true  "Category data"
-// @Success      200  {object}  response.Response{data=Category}
+// @Success      200  {object}  response.Response{data=CategoryResponse}
 // @Failure      400  {object}  response.ResponseBase
 // @Failure      404  {object}  response.ResponseBase
 // @Failure      500  {object}  response.ResponseBase
@@ -45,5 +45,5 @@ func (h *Category) Update(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, category)
+	response.Success(c, toResponse(*category))
 }
