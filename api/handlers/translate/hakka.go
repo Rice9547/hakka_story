@@ -1,6 +1,7 @@
 package htranslate
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 
 	"github.com/rice9547/hakka_story/lib/response"
@@ -12,7 +13,7 @@ type (
 	}
 
 	textGenerator interface {
-		Text2Text(text string) (string, error)
+		Text2Text(ctx context.Context, text string) (string, error)
 	}
 
 	TranslateRequest struct {
@@ -47,7 +48,7 @@ func (t *Translate) TranslateHakka(c *gin.Context) {
 		return
 	}
 
-	hakka, err := t.generator.Text2Text(request.Text)
+	hakka, err := t.generator.Text2Text(c.Request.Context(), request.Text)
 	if err != nil {
 		response.Error(c, 500, "Failed to translate")
 		return

@@ -2,6 +2,7 @@ package openai
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -20,7 +21,7 @@ type AudioResponse struct {
 	AudioContent string `json:"audio_content"`
 }
 
-func (c *Client) Text2Speech(prompt string) ([]byte, error) {
+func (c *Client) Text2Speech(ctx context.Context, prompt string) ([]byte, error) {
 	requestData := AudioRequest{
 		Model: "tts-1",
 		Input: prompt,
@@ -29,7 +30,7 @@ func (c *Client) Text2Speech(prompt string) ([]byte, error) {
 
 	jsonData, _ := json.Marshal(requestData)
 
-	req, _ := http.NewRequest("POST", speechApiUrl, bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequestWithContext(ctx, "POST", speechApiUrl, bytes.NewBuffer(jsonData))
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 

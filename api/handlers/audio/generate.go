@@ -42,7 +42,7 @@ func (h *Audio) Generate(c *gin.Context) {
 		return
 	}
 
-	data, err := h.generator.Text2Speech(req.Prompt)
+	data, err := h.generator.Text2Speech(c.Request.Context(), req.Prompt)
 	if err != nil {
 		errors.ErrorHandler(c, err)
 		return

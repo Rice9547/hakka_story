@@ -42,7 +42,7 @@ func (h *Image) Generate(c *gin.Context) {
 		return
 	}
 
-	_, data, err := h.generator.Text2Image(req.Prompt)
+	_, data, err := h.generator.Text2Image(c.Request.Context(), req.Prompt)
 	if err != nil {
 		errors.ErrorHandler(c, err)
 		return
