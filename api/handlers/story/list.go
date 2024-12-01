@@ -33,9 +33,9 @@ func (h *Story) List(c *gin.Context) {
 		err     error
 	)
 	if len(categoryNames) == 0 {
-		stories, err = h.service.ListStory()
+		stories, err = h.service.ListStory(c.Request.Context())
 	} else {
-		stories, err = h.service.ListStoryByCategories(categoryNames)
+		stories, err = h.service.ListStoryByCategories(c.Request.Context(), categoryNames)
 	}
 
 	if err != nil {

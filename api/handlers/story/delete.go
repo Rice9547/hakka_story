@@ -29,7 +29,7 @@ func (h *Story) Delete(c *gin.Context) {
 		return
 	}
 
-	if err = h.service.DeleteByID(id); err != nil {
+	if err = h.service.DeleteByID(c.Request.Context(), id); err != nil {
 		if errors.Is(err, errors.ErrStoryNotFound) {
 			errors.ErrorHandler(c, errors.NewAppError(http.StatusNotFound, err, "Story not found"))
 			return

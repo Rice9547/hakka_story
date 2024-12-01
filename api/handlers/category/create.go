@@ -26,7 +26,7 @@ func (h *Category) Create(c *gin.Context) {
 		response.Error(c, 400, err.Error())
 	}
 
-	category, err = h.service.Create(category)
+	category, err = h.service.Create(c.Request.Context(), category)
 	if err != nil {
 		response.Error(c, 500, fmt.Sprintf("Failed to create category, err: %v", err))
 		return

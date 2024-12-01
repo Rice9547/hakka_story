@@ -98,7 +98,7 @@ func (h *Story) Create(c *gin.Context) {
 		return
 	}
 
-	if err = h.service.CreateStory(story); err != nil {
+	if err = h.service.CreateStory(c.Request.Context(), story); err != nil {
 		errors.ErrorHandler(c, errors.NewAppError(http.StatusInternalServerError, err, "Failed to create story"))
 		return
 	}
