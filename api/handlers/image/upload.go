@@ -39,7 +39,7 @@ func (h *Image) Upload(c *gin.Context) {
 	}
 	defer file.Close()
 
-	url, err := h.uploader.UploadImage(c, file, header)
+	url, err := h.uploader.UploadImage(c.Request.Context(), file, header)
 	if err != nil {
 		if errors.Is(err, errors.ErrUnsupportedFileType) {
 			response.Error(c, http.StatusBadRequest, "unsupported file type")

@@ -19,7 +19,7 @@ import (
 // @Router       /category [get]
 func (h *Category) List(c *gin.Context) {
 	name := c.DefaultQuery("name", "")
-	categories, err := h.service.ListByName(name)
+	categories, err := h.service.ListByName(c.Request.Context(), name)
 	if err != nil {
 		response.Error(c, 500, fmt.Sprintf("Failed to retrieve categories, err: %v", err))
 		return

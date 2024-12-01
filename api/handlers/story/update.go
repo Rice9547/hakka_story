@@ -37,7 +37,7 @@ func (h *Story) Update(c *gin.Context) {
 		return
 	}
 
-	if err = h.service.UpdateByID(id, story); err != nil {
+	if err = h.service.UpdateByID(c.Request.Context(), id, story); err != nil {
 		if errors.Is(err, errors.ErrStoryNotFound) {
 			errors.ErrorHandler(c, errors.NewAppError(http.StatusNotFound, err, "Story not found"))
 			return

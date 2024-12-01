@@ -26,7 +26,7 @@ func (h *Story) Get(c *gin.Context) {
 		return
 	}
 
-	story, err := h.service.GetStory(id)
+	story, err := h.service.GetStory(c.Request.Context(), id)
 	if err != nil {
 		errors.ErrorHandler(c, errors.NewAppError(http.StatusNotFound, err, "Story not found"))
 		return

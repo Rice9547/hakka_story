@@ -42,7 +42,7 @@ func (h *Audio) Generate(c *gin.Context) {
 		return
 	}
 
-	data, err := h.generator.Text2Speech(req.Prompt)
+	data, err := h.generator.Text2Speech(c.Request.Context(), req.Prompt)
 	if err != nil {
 		errors.ErrorHandler(c, err)
 		return
@@ -53,7 +53,7 @@ func (h *Audio) Generate(c *gin.Context) {
 		Header:   make(textproto.MIMEHeader),
 	}
 	header.Header.Add("Content-Type", "audio/mpeg")
-	url, err := h.uploader.UploadAudio(c, bytes.NewReader(data), header)
+	url, err := h.uploader.UploadAudio(c.Request.Context(), bytes.NewReader(data), header)
 	if err != nil {
 		errors.ErrorHandler(c, err)
 		return

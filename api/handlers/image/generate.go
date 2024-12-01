@@ -42,7 +42,7 @@ func (h *Image) Generate(c *gin.Context) {
 		return
 	}
 
-	_, data, err := h.generator.Text2Image(req.Prompt)
+	_, data, err := h.generator.Text2Image(c.Request.Context(), req.Prompt)
 	if err != nil {
 		errors.ErrorHandler(c, err)
 		return
@@ -53,7 +53,7 @@ func (h *Image) Generate(c *gin.Context) {
 		Header:   make(textproto.MIMEHeader),
 	}
 	header.Header.Add("Content-Type", "image/png")
-	url, err := h.uploader.UploadImage(c, bytes.NewReader(data), header)
+	url, err := h.uploader.UploadImage(c.Request.Context(), bytes.NewReader(data), header)
 	if err != nil {
 		errors.ErrorHandler(c, err)
 		return

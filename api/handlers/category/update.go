@@ -35,7 +35,7 @@ func (h *Category) Update(c *gin.Context) {
 		return
 	}
 
-	category, err = h.service.Update(id, category.Name)
+	category, err = h.service.Update(c.Request.Context(), id, category.Name)
 	if err != nil {
 		if errors.Is(err, errors.ErrCategoryNotFound) {
 			response.Error(c, 404, "Category not found")

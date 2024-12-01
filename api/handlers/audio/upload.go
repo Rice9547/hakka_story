@@ -39,7 +39,7 @@ func (h *Audio) Upload(c *gin.Context) {
 	}
 	defer file.Close()
 
-	url, err := h.uploader.UploadAudio(c, file, header)
+	url, err := h.uploader.UploadAudio(c.Request.Context(), file, header)
 	if err != nil {
 		if errors.Is(err, errors.ErrUnsupportedFileType) {
 			response.Error(c, http.StatusBadRequest, "unsupported file type")

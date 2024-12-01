@@ -2,6 +2,7 @@ package openai
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -22,7 +23,7 @@ type ImageResponse struct {
 	} `json:"data"`
 }
 
-func (c *Client) Text2Image(prompt string) (string, []byte, error) {
+func (c *Client) Text2Image(ctx context.Context, prompt string) (string, []byte, error) {
 	requestData := ImageRequest{
 		Prompt: prompt,
 		N:      1,
@@ -30,15 +31,14 @@ func (c *Client) Text2Image(prompt string) (string, []byte, error) {
 	}
 
 	jsonData, _ := json.Marshal(requestData)
-	req, err := http.NewRequest("POST", imageApiUrl, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequestWithContext(ctx, "POST", imageApiUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return "", nil, err
 	}
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return "", nil, err
 	}

@@ -1,6 +1,9 @@
 package haudio
 
-import supload "github.com/rice9547/hakka_story/service/upload"
+import (
+	"context"
+	supload "github.com/rice9547/hakka_story/service/upload"
+)
 
 type Audio struct {
 	uploader  *supload.UploadService
@@ -8,7 +11,7 @@ type Audio struct {
 }
 
 type audioGenerator interface {
-	Text2Speech(prompt string) ([]byte, error)
+	Text2Speech(ctx context.Context, prompt string) ([]byte, error)
 }
 
 func New(uploader *supload.UploadService, generator audioGenerator) *Audio {
