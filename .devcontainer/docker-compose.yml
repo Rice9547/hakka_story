@@ -1,0 +1,20 @@
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/go:1.23
+    volumes:
+      - ..:/workspace:cached
+    networks: [ 'devcontainer' ]
+    command: sleep infinity
+
+  database:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hakka_story
+    restart: always
+    ports: [ '3306:3306' ]
+    networks: [ 'devcontainer' ]
+
+networks:
+  devcontainer:
+    driver: bridge

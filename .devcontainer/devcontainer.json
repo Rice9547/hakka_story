@@ -1,0 +1,25 @@
+{
+  "name": "Go API",
+
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/app",
+
+  "customizations": {
+    "vscode": {
+      "settings": {},
+      "extensions": [
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  },
+
+  "forwardPorts": [8080],
+
+  "portsAttributes": {
+    "9000": {
+      "label": "Go HTTP Server",
+      "onAutoForward": "notify"
+    }
+  }
+}
