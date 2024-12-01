@@ -7,8 +7,7 @@ type StoryPage struct {
 	ContentCN    string      `gorm:"column:content_cn"`
 	ContentHakka string      `gorm:"column:content_hakka"`
 	AudioFiles   []AudioFile `gorm:"foreignKey:story_page_id;references:id"`
-	ImageID      *uint64     `gorm:"column:image_id"`
-	Image        *Image      `gorm:"foreignKey:image_id;references:id;OnDelete:CASCADE"`
+	Image        string      `gorm:"column:image_url"`
 }
 
 func (StoryPage) TableName() string {

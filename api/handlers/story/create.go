@@ -2,7 +2,6 @@ package hstory
 
 import (
 	"github.com/rice9547/hakka_story/entities"
-	"github.com/rice9547/hakka_story/lib/compare"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -47,7 +46,7 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*entities.Story, error) {
 	story := &entities.Story{
 		Title:       s.Title,
 		Description: s.Description,
-		Image:       compare.If(s.CoverImage != "", &entities.Image{ImageURL: s.CoverImage}, nil),
+		Image:       s.CoverImage,
 		Pages:       make([]entities.StoryPage, 0, len(s.Pages)),
 		Categories:  make([]entities.Category, 0, len(s.Categories)),
 	}
@@ -55,7 +54,7 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*entities.Story, error) {
 	for _, page := range s.Pages {
 		story.Pages = append(story.Pages, entities.StoryPage{
 			PageNumber:   page.Number,
-			Image:        compare.If(page.Image != "", &entities.Image{ImageURL: page.Image}, nil),
+			Image:        page.Image,
 			ContentCN:    page.ContentCN,
 			ContentHakka: page.ContentHakka,
 			AudioFiles:   make([]entities.AudioFile, 0, len(page.Audios)),

@@ -63,10 +63,7 @@ func toResponse(story entities.Story) StoryResponse {
 		ID:          story.ID,
 		Title:       story.Title,
 		Description: story.Description,
-	}
-
-	if story.Image != nil {
-		resp.CoverImage = story.Image.ImageURL
+		CoverImage:  story.Image,
 	}
 
 	resp.Categories = make([]CategoryResponse, 0, len(story.Categories))
@@ -86,13 +83,10 @@ func toFullyResponse(story entities.Story) FullStoryResponse {
 		currentPage := PageResponse{
 			ID:           page.ID,
 			Number:       page.PageNumber,
+			Image:        page.Image,
 			ContentCN:    page.ContentCN,
 			ContentHakka: page.ContentHakka,
 			Audios:       make([]AudioResponse, 0, len(page.AudioFiles)),
-		}
-
-		if page.Image != nil {
-			currentPage.Image = page.Image.ImageURL
 		}
 
 		for _, audio := range page.AudioFiles {
