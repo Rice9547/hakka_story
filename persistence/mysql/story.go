@@ -43,7 +43,8 @@ func (r *StoryRepository) GetByID(id uint64) (*dstory.Story, error) {
 		Preload(clause.Associations).
 		Preload("Pages.AudioFiles").
 		Preload("Categories", func(db *gorm.DB) *gorm.DB {
-			return db.Joins("JOIN story_to_category ON story_to_category.category_id = categories.id").
+			return db.Joins("LEFT JOIN story_to_category ON story_to_category.category_id = categories.id").
+				Where("story_to_category.story_id = ?", id).
 				Order("story_to_category.id ASC")
 		}).
 		First(&story, id).Error
