@@ -38,8 +38,7 @@ func (c *Client) Text2Image(ctx context.Context, prompt string) (string, []byte,
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return "", nil, err
 	}
