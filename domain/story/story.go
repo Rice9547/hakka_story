@@ -14,7 +14,7 @@ type Story struct {
 	Description string               `gorm:"column:description"`
 	Pages       []StoryPage          `gorm:"foreignKey:story_id;references:id"`
 	ImageID     *uint64              `gorm:"column:image_id"`
-	Image       *Image               `gorm:"foreignKey:image_id;references:id"`
+	Image       *Image               `gorm:"foreignKey:image_id;references:id;OnDelete:CASCADE"`
 	Categories  []dcategory.Category `gorm:"many2many:story_to_category;foreignKey:id;joinForeignKey:story_id;References:id;joinReferences:category_id;gorm:ordered"`
 	UpdatedAt   time.Time
 	DeletedAt   gorm.DeletedAt
@@ -27,6 +27,8 @@ type StoryPage struct {
 	ContentCN    string      `gorm:"column:content_cn"`
 	ContentHakka string      `gorm:"column:content_hakka"`
 	AudioFiles   []AudioFile `gorm:"foreignKey:story_page_id;references:id"`
+	ImageID      *uint64     `gorm:"column:image_id"`
+	Image        *Image      `gorm:"foreignKey:image_id;references:id;OnDelete:CASCADE"`
 }
 
 type Image struct {
