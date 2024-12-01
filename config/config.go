@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"strings"
 
@@ -68,7 +67,6 @@ func LoadConfig(configPath string) (Config, error) {
 	}
 
 	if rawAllowOrigins := viper.GetString("SERVER_ALLOW_ORIGINS"); rawAllowOrigins != "" {
-		fmt.Printf("AllowOrigins: %s\n", rawAllowOrigins)
 		config.Server.AllowOrigins = strings.Split(rawAllowOrigins, " ")
 	}
 
