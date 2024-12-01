@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -64,6 +65,11 @@ func LoadConfig(configPath string) (Config, error) {
 	if err != nil {
 		log.Fatalf("Unable to decode into struct, %v", err)
 		return config, err
+	}
+
+	if rawAllowOrigins := viper.GetString("SERVER_ALLOW_ORIGINS"); rawAllowOrigins != "" {
+		fmt.Printf("AllowOrigins: %s\n", rawAllowOrigins)
+		config.Server.AllowOrigins = strings.Split(rawAllowOrigins, " ")
 	}
 
 	return config, nil
