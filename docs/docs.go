@@ -1054,6 +1054,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image": {
+                    "type": "string"
+                },
                 "page_number": {
                     "type": "integer"
                 }
@@ -1126,6 +1129,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "content_hakka": {
+                    "type": "string"
+                },
+                "image": {
                     "type": "string"
                 },
                 "page_number": {

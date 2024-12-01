@@ -22,6 +22,7 @@ type (
 		ContentCN    string          `json:"content_cn"`
 		ContentHakka string          `json:"content_hakka"`
 		Audios       []AudioResponse `json:"audios"`
+		Image        string          `json:"image"`
 	}
 
 	CategoryResponse struct {
@@ -72,21 +73,27 @@ func toResponse(story dstory.Story) StoryResponse {
 func toFullyResponse(story dstory.Story) FullStoryResponse {
 	pages := make([]PageResponse, 0, len(story.Pages))
 	for _, page := range story.Pages {
-		pages = append(pages, PageResponse{
+		currentPage := PageResponse{
 			ID:           page.ID,
 			Number:       page.PageNumber,
 			ContentCN:    page.ContentCN,
 			ContentHakka: page.ContentHakka,
 			Audios:       make([]AudioResponse, 0, len(page.AudioFiles)),
-		})
+		}
+
+		if page.Image != nil {
+			currentPage.Image = page.Image.ImageURL
+		}
 
 		for _, audio := range page.AudioFiles {
-			pages[len(pages)-1].Audios = append(pages[len(pages)-1].Audios, AudioResponse{
+			currentPage.Audios = append(currentPage.Audios, AudioResponse{
 				ID:       audio.ID,
 				AudioURL: audio.AudioURL,
 				Dialect:  audio.Dialect,
 			})
 		}
+
+		pages = append(pages, currentPage)
 	}
 
 	return FullStoryResponse{

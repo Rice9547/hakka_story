@@ -1,6 +1,7 @@
 package hstory
 
 import (
+	"github.com/rice9547/hakka_story/lib/compare"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,7 @@ type (
 
 	UpsertPageRequest struct {
 		Number       int                  `json:"page_number" binding:"required"`
+		Image        string               `json:"image"`
 		ContentCN    string               `json:"content_cn" binding:"required"`
 		ContentHakka string               `json:"content_hakka" binding:"required"`
 		Audios       []UpsertAudioRequest `json:"audios"`
@@ -46,7 +48,7 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 	story := &dstory.Story{
 		Title:       s.Title,
 		Description: s.Description,
-		Image:       &dstory.Image{ImageURL: s.CoverImage},
+		Image:       compare.If(s.CoverImage != "", &dstory.Image{ImageURL: s.CoverImage}, nil),
 		Pages:       make([]dstory.StoryPage, 0, len(s.Pages)),
 		Categories:  make([]dcategory.Category, 0, len(s.Categories)),
 	}
@@ -54,6 +56,7 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 	for _, page := range s.Pages {
 		story.Pages = append(story.Pages, dstory.StoryPage{
 			PageNumber:   page.Number,
+			Image:        compare.If(page.Image != "", &dstory.Image{ImageURL: page.Image}, nil),
 			ContentCN:    page.ContentCN,
 			ContentHakka: page.ContentHakka,
 			AudioFiles:   make([]dstory.AudioFile, 0, len(page.Audios)),

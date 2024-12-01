@@ -41,6 +41,7 @@ func (r *StoryRepository) GetByID(id uint64) (*dstory.Story, error) {
 	err := r.DB.
 		Model(&story).
 		Preload(clause.Associations).
+		Preload("Pages.Image").
 		Preload("Pages.AudioFiles").
 		Preload("Categories", func(db *gorm.DB) *gorm.DB {
 			return db.Joins("LEFT JOIN story_to_category ON story_to_category.category_id = categories.id").
