@@ -1,4 +1,4 @@
-package dcategory
+package repository
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/rice9547/hakka_story/entities"
 )
 
-type Repository interface {
+type Category interface {
 	Save(ctx context.Context, c *entities.Category) error
 	ListByKeyword(ctx context.Context, keyword string) ([]entities.Category, error)
 	UpdateByID(ctx context.Context, id uint64, s *entities.Category) error

@@ -1,15 +1,22 @@
 package hcategory
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/rice9547/hakka_story/entities"
 
-	scategory "github.com/rice9547/hakka_story/service/category"
+	"github.com/rice9547/hakka_story/entities"
 )
 
 type (
+	Service interface {
+		Create(ctx context.Context, c *entities.Category) (*entities.Category, error)
+		ListByName(ctx context.Context, name string) ([]entities.Category, error)
+		Update(ctx context.Context, id uint64, name string) (*entities.Category, error)
+		DeleteByID(ctx context.Context, id uint64) error
+	}
+
 	Category struct {
-		service scategory.Service
+		service Service
 	}
 
 	UpsertRequest struct {
@@ -22,7 +29,7 @@ type (
 	}
 )
 
-func New(service scategory.Service) *Category {
+func New(service Service) *Category {
 	return &Category{service: service}
 }
 

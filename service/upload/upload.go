@@ -8,17 +8,17 @@ import (
 
 	"github.com/google/uuid"
 
-	dupload "github.com/rice9547/hakka_story/domain/upload"
 	"github.com/rice9547/hakka_story/lib/errors"
+	"github.com/rice9547/hakka_story/repository"
 )
 
 type UploadService struct {
-	repo dupload.Repository
+	uploadRepo repository.Upload
 }
 
-func New(repo dupload.Repository) *UploadService {
+func New(uploadRepo repository.Upload) *UploadService {
 	return &UploadService{
-		repo: repo,
+		uploadRepo: uploadRepo,
 	}
 }
 
@@ -26,7 +26,7 @@ func (s *UploadService) UploadImage(ctx context.Context, file io.Reader, header 
 	contentType := header.Header.Get("Content-Type")
 	filename := uuid.New().String() + filepath.Ext(header.Filename)
 
-	url, err := s.repo.UploadImage(ctx, file, filename, contentType)
+	url, err := s.uploadRepo.UploadImage(ctx, file, filename, contentType)
 	if err != nil {
 		return "", errors.ErrFailedToUploadFile
 	}
@@ -38,7 +38,7 @@ func (s *UploadService) UploadAudio(ctx context.Context, file io.Reader, header 
 	contentType := header.Header.Get("Content-Type")
 	filename := uuid.New().String() + filepath.Ext(header.Filename)
 
-	url, err := s.repo.UploadAudio(ctx, file, filename, contentType)
+	url, err := s.uploadRepo.UploadAudio(ctx, file, filename, contentType)
 	if err != nil {
 		return "", errors.ErrFailedToUploadFile
 	}

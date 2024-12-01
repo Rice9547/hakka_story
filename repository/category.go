@@ -1,11 +1,11 @@
-package dstory
+package repository
 
 import (
 	"context"
 	"github.com/rice9547/hakka_story/entities"
 )
 
-type Repository interface {
+type Story interface {
 	Save(ctx context.Context, s *entities.Story) error
 	List(ctx context.Context) ([]entities.Story, error)
 	FilterByCategories(ctx context.Context, categoryNames []string) ([]entities.Story, error)

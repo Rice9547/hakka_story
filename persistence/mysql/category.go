@@ -2,9 +2,9 @@ package mysql
 
 import (
 	"context"
+	"github.com/rice9547/hakka_story/repository"
 	"gorm.io/gorm"
 
-	dcategory "github.com/rice9547/hakka_story/domain/category"
 	"github.com/rice9547/hakka_story/entities"
 	"github.com/rice9547/hakka_story/lib/errors"
 )
@@ -13,7 +13,7 @@ type CategoryRepository struct {
 	DB *gorm.DB
 }
 
-func NewCategory(client *Client) dcategory.Repository {
+func NewCategory(client *Client) repository.Category {
 	return &CategoryRepository{DB: client.DB()}
 }
 

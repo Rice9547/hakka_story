@@ -2,20 +2,27 @@ package himage
 
 import (
 	"context"
-	"github.com/rice9547/hakka_story/lib/openai"
-	supload "github.com/rice9547/hakka_story/service/upload"
+	"io"
+	"mime/multipart"
 )
 
-type Image struct {
-	uploader  *supload.UploadService
-	generator imageGenerator
-}
+type (
+	UploadService interface {
+		UploadImage(ctx context.Context, file io.Reader, header *multipart.FileHeader) (string, error)
+		UploadAudio(ctx context.Context, file io.Reader, header *multipart.FileHeader) (string, error)
+	}
 
-type imageGenerator interface {
-	Text2Image(ctx context.Context, prompt string) (string, []byte, error)
-}
+	ImageGenerator interface {
+		Text2Image(ctx context.Context, prompt string) (string, []byte, error)
+	}
 
-func New(uploader *supload.UploadService, generator *openai.Client) *Image {
+	Image struct {
+		uploader  UploadService
+		generator ImageGenerator
+	}
+)
+
+func New(uploader UploadService, generator ImageGenerator) *Image {
 	return &Image{
 		uploader:  uploader,
 		generator: generator,

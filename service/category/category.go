@@ -2,38 +2,31 @@ package scategory
 
 import (
 	"context"
+	"github.com/rice9547/hakka_story/repository"
 
-	dcategory "github.com/rice9547/hakka_story/domain/category"
 	"github.com/rice9547/hakka_story/entities"
 )
 
 type (
-	Service interface {
-		Create(ctx context.Context, c *entities.Category) (*entities.Category, error)
-		ListByName(ctx context.Context, name string) ([]entities.Category, error)
-		Update(ctx context.Context, id uint64, name string) (*entities.Category, error)
-		DeleteByID(ctx context.Context, id uint64) error
-	}
-
-	service struct {
-		repo dcategory.Repository
+	Service struct {
+		categoryRepo repository.Category
 	}
 )
 
-func New(repo dcategory.Repository) Service {
-	return &service{repo: repo}
+func New(categoryRepo repository.Category) *Service {
+	return &Service{categoryRepo: categoryRepo}
 }
 
-func (s *service) Create(ctx context.Context, c *entities.Category) (*entities.Category, error) {
-	if err := s.repo.Save(ctx, c); err != nil {
+func (s *Service) Create(ctx context.Context, c *entities.Category) (*entities.Category, error) {
+	if err := s.categoryRepo.Save(ctx, c); err != nil {
 		return nil, err
 	}
 
 	return c, nil
 }
 
-func (s *service) ListByName(ctx context.Context, name string) ([]entities.Category, error) {
-	categories, err := s.repo.ListByKeyword(ctx, name)
+func (s *Service) ListByName(ctx context.Context, name string) ([]entities.Category, error) {
+	categories, err := s.categoryRepo.ListByKeyword(ctx, name)
 	if err != nil {
 		return nil, err
 	}
@@ -41,13 +34,13 @@ func (s *service) ListByName(ctx context.Context, name string) ([]entities.Categ
 	return categories, nil
 }
 
-func (s *service) Update(ctx context.Context, id uint64, name string) (*entities.Category, error) {
+func (s *Service) Update(ctx context.Context, id uint64, name string) (*entities.Category, error) {
 	category := &entities.Category{
 		ID:   id,
 		Name: name,
 	}
 
-	err := s.repo.UpdateByID(ctx, id, category)
+	err := s.categoryRepo.UpdateByID(ctx, id, category)
 	if err != nil {
 		return nil, err
 	}
@@ -55,6 +48,6 @@ func (s *service) Update(ctx context.Context, id uint64, name string) (*entities
 	return category, nil
 }
 
-func (s *service) DeleteByID(ctx context.Context, id uint64) error {
-	return s.repo.DeleteByID(ctx, id)
+func (s *Service) DeleteByID(ctx context.Context, id uint64) error {
+	return s.categoryRepo.DeleteByID(ctx, id)
 }

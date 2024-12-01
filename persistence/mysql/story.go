@@ -2,10 +2,10 @@ package mysql
 
 import (
 	"context"
+	"github.com/rice9547/hakka_story/repository"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	dstory "github.com/rice9547/hakka_story/domain/story"
 	"github.com/rice9547/hakka_story/entities"
 	"github.com/rice9547/hakka_story/lib/errors"
 )
@@ -14,7 +14,7 @@ type StoryRepository struct {
 	DB *gorm.DB
 }
 
-func NewStory(client *Client) dstory.Repository {
+func NewStory(client *Client) repository.Story {
 	return &StoryRepository{DB: client.DB()}
 }
 

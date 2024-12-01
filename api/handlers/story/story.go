@@ -1,13 +1,23 @@
 package hstory
 
 import (
+	"context"
+
 	"github.com/rice9547/hakka_story/entities"
-	sstory "github.com/rice9547/hakka_story/service/story"
 )
 
 type (
+	Service interface {
+		CreateStory(ctx context.Context, s *entities.Story) error
+		ListStory(ctx context.Context) ([]entities.Story, error)
+		ListStoryByCategories(ctx context.Context, categoryNames []string) ([]entities.Story, error)
+		GetStory(ctx context.Context, id uint64) (*entities.Story, error)
+		UpdateByID(ctx context.Context, id uint64, s *entities.Story) error
+		DeleteByID(ctx context.Context, id uint64) error
+	}
+
 	Story struct {
-		service sstory.Service
+		service Service
 	}
 
 	AudioResponse struct {
@@ -44,7 +54,7 @@ type (
 	}
 )
 
-func New(service sstory.Service) *Story {
+func New(service Service) *Story {
 	return &Story{service: service}
 }
 
