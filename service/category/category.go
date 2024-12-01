@@ -2,14 +2,16 @@ package scategory
 
 import (
 	"context"
+
 	dcategory "github.com/rice9547/hakka_story/domain/category"
+	"github.com/rice9547/hakka_story/entities"
 )
 
 type (
 	Service interface {
-		Create(ctx context.Context, c *dcategory.Category) (*dcategory.Category, error)
-		ListByName(ctx context.Context, name string) ([]dcategory.Category, error)
-		Update(ctx context.Context, id uint64, name string) (*dcategory.Category, error)
+		Create(ctx context.Context, c *entities.Category) (*entities.Category, error)
+		ListByName(ctx context.Context, name string) ([]entities.Category, error)
+		Update(ctx context.Context, id uint64, name string) (*entities.Category, error)
 		DeleteByID(ctx context.Context, id uint64) error
 	}
 
@@ -22,7 +24,7 @@ func New(repo dcategory.Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s *service) Create(ctx context.Context, c *dcategory.Category) (*dcategory.Category, error) {
+func (s *service) Create(ctx context.Context, c *entities.Category) (*entities.Category, error) {
 	if err := s.repo.Save(ctx, c); err != nil {
 		return nil, err
 	}
@@ -30,7 +32,7 @@ func (s *service) Create(ctx context.Context, c *dcategory.Category) (*dcategory
 	return c, nil
 }
 
-func (s *service) ListByName(ctx context.Context, name string) ([]dcategory.Category, error) {
+func (s *service) ListByName(ctx context.Context, name string) ([]entities.Category, error) {
 	categories, err := s.repo.ListByKeyword(ctx, name)
 	if err != nil {
 		return nil, err
@@ -39,8 +41,8 @@ func (s *service) ListByName(ctx context.Context, name string) ([]dcategory.Cate
 	return categories, nil
 }
 
-func (s *service) Update(ctx context.Context, id uint64, name string) (*dcategory.Category, error) {
-	category := &dcategory.Category{
+func (s *service) Update(ctx context.Context, id uint64, name string) (*entities.Category, error) {
+	category := &entities.Category{
 		ID:   id,
 		Name: name,
 	}
