@@ -1,7 +1,7 @@
 package hstory
 
 import (
-	dstory "github.com/rice9547/hakka_story/domain/story"
+	"github.com/rice9547/hakka_story/entities"
 	sstory "github.com/rice9547/hakka_story/service/story"
 )
 
@@ -48,7 +48,7 @@ func New(service sstory.Service) *Story {
 	return &Story{service: service}
 }
 
-func toResponse(story dstory.Story) StoryResponse {
+func toResponse(story entities.Story) StoryResponse {
 	resp := StoryResponse{
 		ID:          story.ID,
 		Title:       story.Title,
@@ -70,7 +70,7 @@ func toResponse(story dstory.Story) StoryResponse {
 	return resp
 }
 
-func toFullyResponse(story dstory.Story) FullStoryResponse {
+func toFullyResponse(story entities.Story) FullStoryResponse {
 	pages := make([]PageResponse, 0, len(story.Pages))
 	for _, page := range story.Pages {
 		currentPage := PageResponse{

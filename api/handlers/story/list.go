@@ -1,11 +1,11 @@
 package hstory
 
 import (
+	"github.com/rice9547/hakka_story/entities"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
-	dstory "github.com/rice9547/hakka_story/domain/story"
 	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
@@ -29,7 +29,7 @@ func (h *Story) List(c *gin.Context) {
 	categoryNames := c.QueryArray("categories")
 
 	var (
-		stories []dstory.Story
+		stories []entities.Story
 		err     error
 	)
 	if len(categoryNames) == 0 {

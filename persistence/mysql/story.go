@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm/clause"
 
 	dstory "github.com/rice9547/hakka_story/domain/story"
+	"github.com/rice9547/hakka_story/entities"
 	"github.com/rice9547/hakka_story/lib/errors"
 )
 
@@ -17,18 +18,18 @@ func NewStory(client *Client) dstory.Repository {
 	return &StoryRepository{DB: client.DB()}
 }
 
-func (r *StoryRepository) Save(ctx context.Context, s *dstory.Story) error {
+func (r *StoryRepository) Save(ctx context.Context, s *entities.Story) error {
 	return r.DB.WithContext(ctx).Save(s).Error
 }
 
-func (r *StoryRepository) List(ctx context.Context) ([]dstory.Story, error) {
-	stories := make([]dstory.Story, 0)
+func (r *StoryRepository) List(ctx context.Context) ([]entities.Story, error) {
+	stories := make([]entities.Story, 0)
 	err := r.DB.WithContext(ctx).Preload(clause.Associations).Find(&stories).Error
 	return stories, err
 }
 
-func (r *StoryRepository) FilterByCategories(ctx context.Context, categoryNames []string) ([]dstory.Story, error) {
-	stories := make([]dstory.Story, 0)
+func (r *StoryRepository) FilterByCategories(ctx context.Context, categoryNames []string) ([]entities.Story, error) {
+	stories := make([]entities.Story, 0)
 	err := r.DB.WithContext(ctx).
 		Preload(clause.Associations).
 		Joins("JOIN story_to_category ON story_to_category.story_id = stories.id").
@@ -38,8 +39,8 @@ func (r *StoryRepository) FilterByCategories(ctx context.Context, categoryNames 
 	return stories, err
 }
 
-func (r *StoryRepository) GetByID(ctx context.Context, id uint64) (*dstory.Story, error) {
-	story := &dstory.Story{}
+func (r *StoryRepository) GetByID(ctx context.Context, id uint64) (*entities.Story, error) {
+	story := &entities.Story{}
 	err := r.DB.
 		WithContext(ctx).
 		Model(&story).
@@ -55,14 +56,14 @@ func (r *StoryRepository) GetByID(ctx context.Context, id uint64) (*dstory.Story
 	return story, err
 }
 
-func (r *StoryRepository) UpdateByID(ctx context.Context, id uint64, story *dstory.Story) error {
+func (r *StoryRepository) UpdateByID(ctx context.Context, id uint64, story *entities.Story) error {
 	return r.DB.WithContext(ctx).
 		Transaction(func(tx *gorm.DB) error {
-			if err := tx.Delete(&dstory.StoryPage{}, "story_id = ?", id).Error; err != nil {
+			if err := tx.Delete(&entities.StoryPage{}, "story_id = ?", id).Error; err != nil {
 				return err
 			}
 
-			if err := tx.Delete(&dstory.StoryToCategory{}, "story_id = ?", id).Error; err != nil {
+			if err := tx.Delete(&entities.StoryToCategory{}, "story_id = ?", id).Error; err != nil {
 				return err
 			}
 
@@ -73,7 +74,7 @@ func (r *StoryRepository) UpdateByID(ctx context.Context, id uint64, story *dsto
 }
 
 func (r *StoryRepository) DeleteByID(ctx context.Context, id uint64) error {
-	err := r.DB.WithContext(ctx).Delete(&dstory.Story{}, id).Error
+	err := r.DB.WithContext(ctx).Delete(&entities.Story{}, id).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.ErrStoryNotFound
 	}

@@ -1,4 +1,4 @@
-package dcategory
+package entities
 
 type Category struct {
 	ID   uint64 `gorm:"column:id"`

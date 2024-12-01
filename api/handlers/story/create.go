@@ -1,13 +1,12 @@
 package hstory
 
 import (
+	"github.com/rice9547/hakka_story/entities"
 	"github.com/rice9547/hakka_story/lib/compare"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
-	dcategory "github.com/rice9547/hakka_story/domain/category"
-	dstory "github.com/rice9547/hakka_story/domain/story"
 	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
@@ -40,30 +39,30 @@ type (
 	}
 )
 
-func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
+func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*entities.Story, error) {
 	if err := ctx.ShouldBind(s); err != nil {
 		return nil, err
 	}
 
-	story := &dstory.Story{
+	story := &entities.Story{
 		Title:       s.Title,
 		Description: s.Description,
-		Image:       compare.If(s.CoverImage != "", &dstory.Image{ImageURL: s.CoverImage}, nil),
-		Pages:       make([]dstory.StoryPage, 0, len(s.Pages)),
-		Categories:  make([]dcategory.Category, 0, len(s.Categories)),
+		Image:       compare.If(s.CoverImage != "", &entities.Image{ImageURL: s.CoverImage}, nil),
+		Pages:       make([]entities.StoryPage, 0, len(s.Pages)),
+		Categories:  make([]entities.Category, 0, len(s.Categories)),
 	}
 
 	for _, page := range s.Pages {
-		story.Pages = append(story.Pages, dstory.StoryPage{
+		story.Pages = append(story.Pages, entities.StoryPage{
 			PageNumber:   page.Number,
-			Image:        compare.If(page.Image != "", &dstory.Image{ImageURL: page.Image}, nil),
+			Image:        compare.If(page.Image != "", &entities.Image{ImageURL: page.Image}, nil),
 			ContentCN:    page.ContentCN,
 			ContentHakka: page.ContentHakka,
-			AudioFiles:   make([]dstory.AudioFile, 0, len(page.Audios)),
+			AudioFiles:   make([]entities.AudioFile, 0, len(page.Audios)),
 		})
 
 		for _, audio := range page.Audios {
-			story.Pages[len(story.Pages)-1].AudioFiles = append(story.Pages[len(story.Pages)-1].AudioFiles, dstory.AudioFile{
+			story.Pages[len(story.Pages)-1].AudioFiles = append(story.Pages[len(story.Pages)-1].AudioFiles, entities.AudioFile{
 				AudioURL: audio.AudioURL,
 				Dialect:  audio.Dialect,
 			})
@@ -71,7 +70,7 @@ func (s *UpsertStoryRequest) bind(ctx *gin.Context) (*dstory.Story, error) {
 	}
 
 	for _, category := range s.Categories {
-		story.Categories = append(story.Categories, dcategory.Category{
+		story.Categories = append(story.Categories, entities.Category{
 			ID:   category.ID,
 			Name: category.Name,
 		})

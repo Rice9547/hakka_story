@@ -2,8 +2,8 @@ package hcategory
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rice9547/hakka_story/entities"
 
-	dcategory "github.com/rice9547/hakka_story/domain/category"
 	scategory "github.com/rice9547/hakka_story/service/category"
 )
 
@@ -26,17 +26,17 @@ func New(service scategory.Service) *Category {
 	return &Category{service: service}
 }
 
-func (r *UpsertRequest) bind(c *gin.Context) (*dcategory.Category, error) {
+func (r *UpsertRequest) bind(c *gin.Context) (*entities.Category, error) {
 	if err := c.BindJSON(r); err != nil {
 		return nil, err
 	}
 
-	return &dcategory.Category{
+	return &entities.Category{
 		Name: r.Name,
 	}, nil
 }
 
-func toResponse(category dcategory.Category) CategoryResponse {
+func toResponse(category entities.Category) CategoryResponse {
 	return CategoryResponse{
 		ID:   category.ID,
 		Name: category.Name,
