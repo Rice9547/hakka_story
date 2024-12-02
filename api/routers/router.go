@@ -58,10 +58,11 @@ func InitRoutes(
 	adminStoryRoutes.POST("", storyHandler.Create)
 	adminStoryRoutes.PUT("/:id", storyHandler.Update)
 	adminStoryRoutes.DELETE("/:id", storyHandler.Delete)
-
 	adminStoryRoutes.GET("/exercise", exerciseHandler.CountStoriesExercise)
+
 	adminExerciseRoutes := adminStoryRoutes.Group("/:id/exercise")
 	adminExerciseRoutes.GET("", exerciseHandler.ListExerciseByStoryID)
+	adminExerciseRoutes.POST("", exerciseHandler.CreateExercise)
 
 	adminCategoryRoutes := adminRoute.Group("/category")
 	adminCategoryRoutes.POST("", categoryHandler.Create)

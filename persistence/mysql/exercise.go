@@ -16,6 +16,10 @@ func NewExercise(client *Client) repository.Exercise {
 	return &ExerciseRepository{DB: client.DB()}
 }
 
+func (r *ExerciseRepository) Save(ctx context.Context, exercise *entities.Exercise) error {
+	return r.DB.WithContext(ctx).Save(exercise).Error
+}
+
 func (r *ExerciseRepository) CountMany(ctx context.Context, storyIDs []uint64) ([]repository.ExerciseCounter, error) {
 	result := make([]repository.ExerciseCounter, 0)
 

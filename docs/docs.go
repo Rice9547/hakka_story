@@ -678,6 +678,69 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Creates a new exercise associated with a specific story ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin exercise"
+                ],
+                "summary": "Create a new exercise",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Story ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Exercise data",
+                        "name": "exercise",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/hexercise.UpsertExerciseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/hexercise.ExerciseResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
             }
         },
         "/admin/translate/hakka": {
@@ -1147,6 +1210,61 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "hexercise.UpsertAnswerRequest": {
+            "type": "object",
+            "required": [
+                "answer_text"
+            ],
+            "properties": {
+                "answer_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "hexercise.UpsertChoiceRequest": {
+            "type": "object",
+            "required": [
+                "choice_text",
+                "is_correct"
+            ],
+            "properties": {
+                "choice_text": {
+                    "type": "string"
+                },
+                "is_correct": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "hexercise.UpsertExerciseRequest": {
+            "type": "object",
+            "required": [
+                "prompt_text"
+            ],
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hexercise.UpsertAnswerRequest"
+                    }
+                },
+                "audio_url": {
+                    "type": "string"
+                },
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hexercise.UpsertChoiceRequest"
+                    }
+                },
+                "prompt_text": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "integer"
                 }
             }

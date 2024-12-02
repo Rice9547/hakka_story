@@ -14,6 +14,10 @@ func New(exerciseRepo repository.Exercise) *Exercise {
 	return &Exercise{exerciseRepo: exerciseRepo}
 }
 
+func (e *Exercise) CreateExercise(ctx context.Context, exercise *entities.Exercise) error {
+	return e.exerciseRepo.Save(ctx, exercise)
+}
+
 func (e *Exercise) GetExerciseCountByStoryIDs(ctx context.Context, storyIDs []uint64) ([]repository.ExerciseCounter, error) {
 	return e.exerciseRepo.CountMany(ctx, storyIDs)
 }
