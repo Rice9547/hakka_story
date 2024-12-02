@@ -47,3 +47,19 @@ func (r *ExerciseRepository) List(ctx context.Context, storyID uint64) ([]entiti
 		Find(&exercises).Error
 	return exercises, err
 }
+
+func (r *ExerciseRepository) Update(ctx context.Context, exerciseID uint64, exercise *entities.Exercise) error {
+	return r.DB.WithContext(ctx).
+		Transaction(func(tx *gorm.DB) error {
+			if err := tx.Delete(&entities.ExerciseChoice{}, "exercise_id = ?", exerciseID).Error; err != nil {
+				return err
+			}
+
+			if err := tx.Delete(&entities.ExerciseOpenAnswer{}, "exercise_id = ?", exerciseID).Error; err != nil {
+				return err
+			}
+
+			exercise.ID = exerciseID
+			return tx.Save(exercise).Error
+		})
+}

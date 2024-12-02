@@ -10,6 +10,7 @@ type (
 		Save(ctx context.Context, exercise *entities.Exercise) error
 		CountMany(ctx context.Context, storyIDs []uint64) ([]ExerciseCounter, error)
 		List(ctx context.Context, storyID uint64) ([]entities.Exercise, error)
+		Update(ctx context.Context, exerciseID uint64, exercise *entities.Exercise) error
 	}
 
 	ExerciseCounter struct {

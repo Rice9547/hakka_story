@@ -46,6 +46,14 @@ func (r *UpsertExerciseRequest) bind(c *gin.Context) (*entities.Exercise, error)
 		Answers:    make([]entities.ExerciseOpenAnswer, 0, len(r.Answers)),
 	}
 
+	if c.Param("exercise_id") != "" {
+		exerciseID, err := strconv.ParseUint(c.Param("exercise_id"), 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		exercise.ID = exerciseID
+	}
+
 	for _, choice := range r.Choices {
 		exercise.Choices = append(exercise.Choices, entities.ExerciseChoice{
 			ChoiceText: choice.ChoiceText,

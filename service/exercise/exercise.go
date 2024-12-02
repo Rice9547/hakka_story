@@ -25,3 +25,8 @@ func (e *Exercise) GetExerciseCountByStoryIDs(ctx context.Context, storyIDs []ui
 func (e *Exercise) ListExerciseByStoryID(ctx context.Context, storyID uint64) ([]entities.Exercise, error) {
 	return e.exerciseRepo.List(ctx, storyID)
 }
+
+func (e *Exercise) UpdateExercise(ctx context.Context, storyID, exerciseID uint64, exercise *entities.Exercise) error {
+	exercise.StoryID = storyID
+	return e.exerciseRepo.Update(ctx, exerciseID, exercise)
+}
