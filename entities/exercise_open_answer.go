@@ -3,9 +3,9 @@ package entities
 import "time"
 
 type ExerciseOpenAnswer struct {
-	ID         int       `gorm:"column:id"`
-	ExerciseID int       `gorm:"column:exercise_id"`
-	Answer     string    `gorm:"column:answer"`
+	ID         uint64    `gorm:"column:id"`
+	ExerciseID uint64    `gorm:"column:exercise_id"`
+	AnswerText string    `gorm:"column:answer_text"`
 	CreatedAt  time.Time `gorm:"column:created_at"`
 	UpdatedAt  time.Time `gorm:"column:updated_at"`
 }

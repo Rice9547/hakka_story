@@ -6,8 +6,8 @@ type (
 	ExerciseType int
 
 	Exercise struct {
-		ID         int          `gorm:"column:id"`
-		StoryID    int          `gorm:"column:story_id"`
+		ID         uint64       `gorm:"column:id"`
+		StoryID    uint64       `gorm:"column:story_id"`
 		Type       ExerciseType `gorm:"column:type"`
 		PromptText string       `gorm:"column:prompt_text"`
 		AudioURL   string       `gorm:"column:audio_url"`

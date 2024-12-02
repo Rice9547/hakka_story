@@ -508,6 +508,69 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/story/exercise": {
+            "get": {
+                "description": "Retrieves the count of exercises associated with specific story IDs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin exercise"
+                ],
+                "summary": "Count exercises for stories",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Story IDs",
+                        "name": "story_ids",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/hexercise.CountStoryExerciseResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid story id",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/story/{id}": {
             "delete": {
                 "description": "Delete a story by its ID",
@@ -551,6 +614,65 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/story/{id}/exercise": {
+            "get": {
+                "description": "Retrieves a list of exercises associated with a specific story ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin exercise"
+                ],
+                "summary": "List exercises by story ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Story ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/hexercise.ExerciseResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid story id",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/response.ResponseBase"
                         }
@@ -885,6 +1007,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entities.ExerciseType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "ExerciseTypeFillIn",
+                "ExerciseTypeChoice"
+            ]
+        },
         "haudio.GenerateRequest": {
             "type": "object",
             "properties": {
@@ -944,6 +1077,77 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "hexercise.ChoiceResponse": {
+            "type": "object",
+            "properties": {
+                "choice_text": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_correct": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "hexercise.CountStoryExerciseResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "story_id": {
+                    "type": "integer"
+                },
+                "story_title": {
+                    "type": "string"
+                }
+            }
+        },
+        "hexercise.ExerciseResponse": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hexercise.OpenAnswerResponse"
+                    }
+                },
+                "audio_url": {
+                    "type": "string"
+                },
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hexercise.ChoiceResponse"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "prompt_text": {
+                    "type": "string"
+                },
+                "story_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "$ref": "#/definitions/entities.ExerciseType"
+                }
+            }
+        },
+        "hexercise.OpenAnswerResponse": {
+            "type": "object",
+            "properties": {
+                "answer_text": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 }
             }
         },

@@ -2,6 +2,8 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	hexercise "github.com/rice9547/hakka_story/api/handlers/exercise"
+	sexercise "github.com/rice9547/hakka_story/service/exercise"
 
 	haudio "github.com/rice9547/hakka_story/api/handlers/audio"
 	hauth "github.com/rice9547/hakka_story/api/handlers/auth"
@@ -26,12 +28,16 @@ func InitRoutes(
 ) {
 	storyRepo := mysql.NewStory(db)
 	categoryRepo := mysql.NewCategory(db)
+	exerciseRepo := mysql.NewExercise(db)
+
 	storyService := sstory.New(storyRepo)
 	uploadService := supload.New(uploader)
 	categoryService := scategory.New(categoryRepo)
+	exerciseService := sexercise.New(exerciseRepo)
 
 	storyHandler := hstory.New(storyService)
 	categoryHandler := hcategory.New(categoryService)
+	exerciseHandler := hexercise.New(exerciseService)
 	imageHandler := himage.New(uploadService, openaiClient)
 	audioHandler := haudio.New(uploadService, openaiClient)
 	translateHandler := htranslate.New(openaiClient)
@@ -52,6 +58,10 @@ func InitRoutes(
 	adminStoryRoutes.POST("", storyHandler.Create)
 	adminStoryRoutes.PUT("/:id", storyHandler.Update)
 	adminStoryRoutes.DELETE("/:id", storyHandler.Delete)
+
+	adminStoryRoutes.GET("/exercise", exerciseHandler.CountStoriesExercise)
+	adminExerciseRoutes := adminStoryRoutes.Group("/:id/exercise")
+	adminExerciseRoutes.GET("", exerciseHandler.ListExerciseByStoryID)
 
 	adminCategoryRoutes := adminRoute.Group("/category")
 	adminCategoryRoutes.POST("", categoryHandler.Create)
