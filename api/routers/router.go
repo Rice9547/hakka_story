@@ -45,6 +45,7 @@ func InitRoutes(
 	apiRoute.GET("/story", storyHandler.List)
 	apiRoute.GET("/story/:id", storyHandler.Get)
 	apiRoute.GET("/category", categoryHandler.List)
+	apiRoute.GET("/story/:id/exercise", exerciseHandler.ListExercise)
 
 	adminRoute.GET("/auth", hauth.Auth)
 
@@ -61,7 +62,7 @@ func InitRoutes(
 	adminStoryRoutes.GET("/exercise", exerciseHandler.CountStoriesExercise)
 
 	adminExerciseRoutes := adminStoryRoutes.Group("/:id/exercise")
-	adminExerciseRoutes.GET("", exerciseHandler.ListExerciseByStoryID)
+	adminExerciseRoutes.GET("", exerciseHandler.AdminListExercise)
 	adminExerciseRoutes.POST("", exerciseHandler.CreateExercise)
 	adminExerciseRoutes.PUT("/:exercise_id", exerciseHandler.UpdateExercise)
 	adminExerciseRoutes.DELETE("/:exercise_id", exerciseHandler.DeleteExercise)

@@ -78,7 +78,7 @@ func (r *UpsertExerciseRequest) bind(c *gin.Context) (*entities.Exercise, error)
 // @Produce json
 // @Param id path uint64 true "Story ID"
 // @Param exercise body UpsertExerciseRequest true "Exercise data"
-// @Success 200 {object} response.Response{data=ExerciseResponse}
+// @Success 200 {object} response.Response{data=ExerciseAdminResponse}
 // @Failure 400 {object} response.ResponseBase "Invalid input"
 // @Failure 500 {object} response.ResponseBase "Internal server error"
 // @Router /admin/story/{id}/exercise [post]
@@ -95,5 +95,5 @@ func (h *Exercise) CreateExercise(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, toExerciseResponse(*exercise, true))
+	response.Success(c, toExerciseAdminResponse(*exercise))
 }

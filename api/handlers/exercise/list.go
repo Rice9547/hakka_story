@@ -58,18 +58,50 @@ func (h *Exercise) CountStoriesExercise(c *gin.Context) {
 	response.Success(c, resp)
 }
 
-// ListExerciseByStoryID godoc
+// AdminListExercise godoc
 // @Summary List exercises by story ID
 // @Description Retrieves a list of exercises associated with a specific story ID
 // @Tags admin exercise
 // @Accept json
 // @Produce json
 // @Param id path uint64 true "Story ID"
-// @Success 200 {object} response.Response{data=[]ExerciseResponse}
+// @Success 200 {object} response.Response{data=[]ExerciseAdminResponse}
 // @Failure 400 {object} response.ResponseBase "Invalid story id"
 // @Failure 500 {object} response.ResponseBase "Internal server error"
 // @Router /admin/story/{id}/exercise [get]
-func (h *Exercise) ListExerciseByStoryID(c *gin.Context) {
+func (h *Exercise) AdminListExercise(c *gin.Context) {
+	storyID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid story id")
+		return
+	}
+
+	exercises, err := h.service.ListExerciseByStoryID(c, storyID)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	resp := make([]ExerciseAdminResponse, 0, len(exercises))
+	for _, exercise := range exercises {
+		resp = append(resp, toExerciseAdminResponse(exercise))
+	}
+
+	response.Success(c, resp)
+}
+
+// ListExercise godoc
+// @Summary List exercises by story ID
+// @Description Retrieves a list of exercises associated with a specific story ID
+// @Tags exercise
+// @Accept json
+// @Produce json
+// @Param id path uint64 true "Story ID"
+// @Success 200 {object} response.Response{data=[]ExerciseResponse}
+// @Failure 400 {object} response.ResponseBase "Invalid story id"
+// @Failure 500 {object} response.ResponseBase "Internal server error"
+// @Router /story/{id}/exercise [get]
+func (h *Exercise) ListExercise(c *gin.Context) {
 	storyID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		response.Error(c, http.StatusBadRequest, "Invalid story id")
@@ -84,7 +116,7 @@ func (h *Exercise) ListExerciseByStoryID(c *gin.Context) {
 
 	resp := make([]ExerciseResponse, 0, len(exercises))
 	for _, exercise := range exercises {
-		resp = append(resp, toExerciseResponse(exercise, true))
+		resp = append(resp, toExerciseResponse(exercise))
 	}
 
 	response.Success(c, resp)

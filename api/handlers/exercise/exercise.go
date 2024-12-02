@@ -20,10 +20,14 @@ type (
 		service Service
 	}
 
-	ChoiceResponse struct {
+	ChoiceBaseResponse struct {
 		ID         uint64 `json:"id"`
 		ChoiceText string `json:"choice_text"`
-		IsCorrect  *bool  `json:"is_correct,omitempty"`
+	}
+
+	ChoiceResponse struct {
+		ChoiceBaseResponse
+		IsCorrect bool `json:"is_correct"`
 	}
 
 	OpenAnswerResponse struct {
@@ -31,14 +35,23 @@ type (
 		AnswerText string `json:"answer_text"`
 	}
 
-	ExerciseResponse struct {
+	ExerciseBaseResponse struct {
 		ID         uint64                `json:"id"`
 		StoryID    uint64                `json:"story_id"`
 		Type       entities.ExerciseType `json:"type"`
 		PromptText string                `json:"prompt_text"`
 		AudioURL   string                `json:"audio_url"`
-		Choices    []ChoiceResponse      `json:"choices"`
-		Answers    []OpenAnswerResponse  `json:"answers,omitempty"`
+	}
+
+	ExerciseAdminResponse struct {
+		ExerciseBaseResponse
+		Choices []ChoiceResponse     `json:"choices"`
+		Answers []OpenAnswerResponse `json:"answers,omitempty"`
+	}
+
+	ExerciseResponse struct {
+		ExerciseBaseResponse
+		Choices []ChoiceBaseResponse `json:"choices"`
 	}
 )
 
@@ -46,17 +59,53 @@ func New(service Service) *Exercise {
 	return &Exercise{service: service}
 }
 
-func toExerciseResponse(exercise entities.Exercise, isAdmin bool) ExerciseResponse {
-	choices := make([]ChoiceResponse, 0, len(exercise.Choices))
+func toExerciseBaseResponse(exercise entities.Exercise) ExerciseBaseResponse {
+	choices := make([]ChoiceBaseResponse, 0, len(exercise.Choices))
 	for _, choice := range exercise.Choices {
-		choices = append(choices, ChoiceResponse{
+		choices = append(choices, ChoiceBaseResponse{
 			ID:         choice.ID,
 			ChoiceText: choice.ChoiceText,
 		})
+	}
 
-		if isAdmin {
-			choices[len(choices)-1].IsCorrect = &choice.IsCorrect
-		}
+	return ExerciseBaseResponse{
+		ID:         exercise.ID,
+		StoryID:    exercise.StoryID,
+		Type:       exercise.Type,
+		PromptText: exercise.PromptText,
+		AudioURL:   exercise.AudioURL,
+	}
+}
+
+func toExerciseResponse(exercise entities.Exercise) ExerciseResponse {
+	base := toExerciseBaseResponse(exercise)
+
+	choices := make([]ChoiceBaseResponse, 0, len(exercise.Choices))
+	for _, choice := range exercise.Choices {
+		choices = append(choices, ChoiceBaseResponse{
+			ID:         choice.ID,
+			ChoiceText: choice.ChoiceText,
+		})
+	}
+
+	return ExerciseResponse{
+		ExerciseBaseResponse: base,
+		Choices:              choices,
+	}
+}
+
+func toExerciseAdminResponse(exercise entities.Exercise) ExerciseAdminResponse {
+	base := toExerciseBaseResponse(exercise)
+
+	choices := make([]ChoiceResponse, 0, len(exercise.Choices))
+	for _, choice := range exercise.Choices {
+		choices = append(choices, ChoiceResponse{
+			ChoiceBaseResponse: ChoiceBaseResponse{
+				ID:         choice.ID,
+				ChoiceText: choice.ChoiceText,
+			},
+			IsCorrect: choice.IsCorrect,
+		})
 	}
 
 	answers := make([]OpenAnswerResponse, 0, len(exercise.Answers))
@@ -67,18 +116,9 @@ func toExerciseResponse(exercise entities.Exercise, isAdmin bool) ExerciseRespon
 		})
 	}
 
-	resp := ExerciseResponse{
-		ID:         exercise.ID,
-		StoryID:    exercise.StoryID,
-		Type:       exercise.Type,
-		PromptText: exercise.PromptText,
-		AudioURL:   exercise.AudioURL,
-		Choices:    choices,
+	return ExerciseAdminResponse{
+		ExerciseBaseResponse: base,
+		Choices:              choices,
+		Answers:              answers,
 	}
-
-	if isAdmin {
-		resp.Answers = answers
-	}
-
-	return resp
 }

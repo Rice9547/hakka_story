@@ -657,7 +657,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/hexercise.ExerciseResponse"
+                                                "$ref": "#/definitions/hexercise.ExerciseAdminResponse"
                                             }
                                         }
                                     }
@@ -721,7 +721,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/hexercise.ExerciseResponse"
+                                            "$ref": "#/definitions/hexercise.ExerciseAdminResponse"
                                         }
                                     }
                                 }
@@ -793,7 +793,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/hexercise.ExerciseResponse"
+                                            "$ref": "#/definitions/hexercise.ExerciseAdminResponse"
                                         }
                                     }
                                 }
@@ -1194,6 +1194,65 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/story/{id}/exercise": {
+            "get": {
+                "description": "Retrieves a list of exercises associated with a specific story ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exercise"
+                ],
+                "summary": "List exercises by story ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Story ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/hexercise.ExerciseResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid story id",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1270,6 +1329,17 @@ const docTemplate = `{
                 }
             }
         },
+        "hexercise.ChoiceBaseResponse": {
+            "type": "object",
+            "properties": {
+                "choice_text": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "hexercise.ChoiceResponse": {
             "type": "object",
             "properties": {
@@ -1298,7 +1368,7 @@ const docTemplate = `{
                 }
             }
         },
-        "hexercise.ExerciseResponse": {
+        "hexercise.ExerciseAdminResponse": {
             "type": "object",
             "properties": {
                 "answers": {
@@ -1314,6 +1384,32 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/hexercise.ChoiceResponse"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "prompt_text": {
+                    "type": "string"
+                },
+                "story_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "$ref": "#/definitions/entities.ExerciseType"
+                }
+            }
+        },
+        "hexercise.ExerciseResponse": {
+            "type": "object",
+            "properties": {
+                "audio_url": {
+                    "type": "string"
+                },
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/hexercise.ChoiceBaseResponse"
                     }
                 },
                 "id": {

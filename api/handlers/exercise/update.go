@@ -15,7 +15,7 @@ import (
 // @Param id path uint64 true "Story ID"
 // @Param exercise_id path uint64 true "Exercise ID"
 // @Param exercise body UpsertExerciseRequest true "Exercise data"
-// @Success 200 {object} response.Response{data=ExerciseResponse}
+// @Success 200 {object} response.Response{data=ExerciseAdminResponse}
 // @Failure 400 {object} response.ResponseBase "Invalid input"
 // @Failure 500 {object} response.ResponseBase "Internal server error"
 // @Router /admin/story/{id}/exercise/{exercise_id} [put]
@@ -32,5 +32,5 @@ func (h *Exercise) UpdateExercise(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, toExerciseResponse(*exercise, true))
+	response.Success(c, toExerciseAdminResponse(*exercise))
 }
