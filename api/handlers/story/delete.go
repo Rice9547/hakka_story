@@ -1,7 +1,6 @@
 package hstory
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -25,16 +24,16 @@ import (
 func (h *Story) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, "Invalid story ID"))
+		response.BadRequest(c, err, "Invalid story ID")
 		return
 	}
 
 	if err = h.service.DeleteByID(c.Request.Context(), id); err != nil {
 		if errors.Is(err, errors.ErrStoryNotFound) {
-			errors.ErrorHandler(c, errors.NewAppError(http.StatusNotFound, err, "Story not found"))
+			response.NotFound(c, "Story not found")
 			return
 		}
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusInternalServerError, err, "Failed to delete story"))
+		response.InternalServerError(c, err, "Failed to delete story")
 		return
 	}
 

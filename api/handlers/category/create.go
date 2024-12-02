@@ -1,8 +1,6 @@
 package hcategory
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/rice9547/hakka_story/lib/response"
@@ -23,12 +21,12 @@ func (h *Category) Create(c *gin.Context) {
 	request := new(UpsertRequest)
 	category, err := request.bind(c)
 	if err != nil {
-		response.Error(c, 400, err.Error())
+		response.BadRequest(c, err, "Invalid input")
 	}
 
 	category, err = h.service.Create(c.Request.Context(), category)
 	if err != nil {
-		response.Error(c, 500, fmt.Sprintf("Failed to create category, err: %v", err))
+		response.InternalServerError(c, err, "Failed to create category")
 		return
 	}
 

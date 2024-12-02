@@ -1,7 +1,6 @@
 package hexercise
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -26,22 +25,22 @@ import (
 func (h *Exercise) DeleteExercise(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, "Invalid story ID"))
+		response.BadRequest(c, err, "Invalid story ID")
 		return
 	}
 
 	exerciseID, err := strconv.ParseUint(c.Param("exercise_id"), 10, 64)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, "Invalid exercise ID"))
+		response.BadRequest(c, err, "Invalid exercise ID")
 		return
 	}
 
 	if err = h.service.DeleteExercise(c.Request.Context(), id, exerciseID); err != nil {
 		if errors.Is(err, errors.ErrExerciseNotFound) {
-			errors.ErrorHandler(c, errors.NewAppError(http.StatusNotFound, err, "Exercise not found"))
+			response.NotFound(c, "Exercise not found")
 			return
 		}
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusInternalServerError, err, "Failed to delete exercise"))
+		response.InternalServerError(c, err, "Failed to delete exercise")
 		return
 	}
 

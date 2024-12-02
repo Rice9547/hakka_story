@@ -1,12 +1,9 @@
 package hstory
 
 import (
-	"github.com/rice9547/hakka_story/entities"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/rice9547/hakka_story/entities"
 
-	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
 
@@ -95,12 +92,12 @@ func (h *Story) Create(c *gin.Context) {
 	request := new(UpsertStoryRequest)
 	story, err := request.bind(c)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, "Invalid input"))
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 
 	if err = h.service.CreateStory(c.Request.Context(), story); err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusInternalServerError, err, "Failed to create story"))
+		response.InternalServerError(c, err, "Failed to create story")
 		return
 	}
 

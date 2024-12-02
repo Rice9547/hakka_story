@@ -52,6 +52,9 @@ func (r *StoryRepository) GetByID(ctx context.Context, id uint64) (*entities.Sto
 				Order("story_to_category.id ASC")
 		}).
 		First(&story, id).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.ErrStoryNotFound
+	}
 	return story, err
 }
 

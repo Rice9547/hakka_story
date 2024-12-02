@@ -3,7 +3,6 @@ package hexercise
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/rice9547/hakka_story/lib/response"
-	"net/http"
 )
 
 // UpdateExercise godoc
@@ -23,12 +22,12 @@ func (h *Exercise) UpdateExercise(c *gin.Context) {
 	req := new(UpsertExerciseRequest)
 	exercise, err := req.bind(c)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "Invalid input")
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 
 	if err := h.service.UpdateExercise(c, exercise.StoryID, exercise.ID, exercise); err != nil {
-		response.Error(c, http.StatusInternalServerError, "Internal server error")
+		response.InternalServerError(c, err, "Failed to update exercise")
 		return
 	}
 

@@ -1,7 +1,6 @@
 package hstory
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -26,23 +25,23 @@ import (
 func (h *Story) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, "Invalid story ID"))
+		response.BadRequest(c, err, "Invalid story ID")
 		return
 	}
 
 	request := new(UpsertStoryRequest)
 	story, err := request.bind(c)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, "Invalid input"))
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 
 	if err = h.service.UpdateByID(c.Request.Context(), id, story); err != nil {
 		if errors.Is(err, errors.ErrStoryNotFound) {
-			errors.ErrorHandler(c, errors.NewAppError(http.StatusNotFound, err, "Story not found"))
+			response.NotFound(c, "Story not found")
 			return
 		}
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusInternalServerError, err, "Failed to update story"))
+		response.InternalServerError(c, err, "Failed to update story")
 		return
 	}
 

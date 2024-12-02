@@ -1,12 +1,11 @@
 package hstory
 
 import (
-	"net/http"
+	"github.com/rice9547/hakka_story/lib/errors"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
 
@@ -22,13 +21,17 @@ import (
 func (h *Story) Get(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, "Invalid story ID"))
+		response.BadRequest(c, err, "Invalid story ID")
 		return
 	}
 
 	story, err := h.service.GetStory(c.Request.Context(), id)
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusNotFound, err, "Story not found"))
+		if errors.Is(err, errors.ErrStoryNotFound) {
+			response.NotFound(c, "Story not found")
+			return
+		}
+		response.InternalServerError(c, err, "Failed to get story")
 		return
 	}
 

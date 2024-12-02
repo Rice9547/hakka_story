@@ -24,24 +24,24 @@ import (
 func (h *Category) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, 400, "Invalid category ID")
+		response.BadRequest(c, err, "Invalid category ID")
 		return
 	}
 
 	req := new(UpsertRequest)
 	category, err := req.bind(c)
 	if err != nil {
-		response.Error(c, 400, "Invalid request")
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 
 	category, err = h.service.Update(c.Request.Context(), id, category.Name)
 	if err != nil {
 		if errors.Is(err, errors.ErrCategoryNotFound) {
-			response.Error(c, 404, "Category not found")
+			response.NotFound(c, "Category not found")
 			return
 		}
-		response.Error(c, 500, "Failed to update category")
+		response.InternalServerError(c, err, "Failed to update category")
 		return
 	}
 

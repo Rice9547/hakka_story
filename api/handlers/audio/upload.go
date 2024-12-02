@@ -1,8 +1,6 @@
 package haudio
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/rice9547/hakka_story/lib/errors"
@@ -34,7 +32,7 @@ type (
 func (h *Audio) Upload(c *gin.Context) {
 	file, header, err := c.Request.FormFile("audio")
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "failed to read file")
+		response.BadRequest(c, err, "Failed to read file")
 		return
 	}
 	defer file.Close()
@@ -42,10 +40,10 @@ func (h *Audio) Upload(c *gin.Context) {
 	url, err := h.uploader.UploadAudio(c.Request.Context(), file, header)
 	if err != nil {
 		if errors.Is(err, errors.ErrUnsupportedFileType) {
-			response.Error(c, http.StatusBadRequest, "unsupported file type")
+			response.BadRequest(c, err, "Unsupported file type")
 			return
 		}
-		response.Error(c, http.StatusInternalServerError, "failed to upload audio")
+		response.InternalServerError(c, err, "Failed to upload audio")
 		return
 	}
 

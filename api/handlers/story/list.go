@@ -1,12 +1,9 @@
 package hstory
 
 import (
-	"github.com/rice9547/hakka_story/entities"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/rice9547/hakka_story/entities"
 
-	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
 
@@ -39,7 +36,7 @@ func (h *Story) List(c *gin.Context) {
 	}
 
 	if err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusInternalServerError, err, "Failed to retrieve stories"))
+		response.InternalServerError(c, err, "Failed to retrieve stories")
 		return
 	}
 

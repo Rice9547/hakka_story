@@ -3,12 +3,10 @@ package haudio
 import (
 	"bytes"
 	"mime/multipart"
-	"net/http"
 	"net/textproto"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
 
@@ -38,13 +36,13 @@ type (
 func (h *Audio) Generate(c *gin.Context) {
 	var req GenerateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		errors.ErrorHandler(c, errors.NewAppError(http.StatusBadRequest, errors.ErrInvalidInput, err.Error()))
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 
 	data, err := h.generator.Text2Speech(c.Request.Context(), req.Prompt)
 	if err != nil {
-		errors.ErrorHandler(c, err)
+		response.InternalServerError(c, err, "Failed to generate audio")
 		return
 	}
 
@@ -55,7 +53,7 @@ func (h *Audio) Generate(c *gin.Context) {
 	header.Header.Add("Content-Type", "audio/mpeg")
 	url, err := h.uploader.UploadAudio(c.Request.Context(), bytes.NewReader(data), header)
 	if err != nil {
-		errors.ErrorHandler(c, err)
+		response.InternalServerError(c, err, "Failed to upload audio")
 		return
 	}
 

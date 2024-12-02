@@ -1,7 +1,6 @@
 package hexercise
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,7 @@ func (h *Exercise) CountStoriesExercise(c *gin.Context) {
 	for _, sid := range qryStoryIds {
 		id, err := strconv.ParseUint(sid, 10, 64)
 		if err != nil {
-			response.Error(c, http.StatusBadRequest, "Invalid story id")
+			response.BadRequest(c, err, "Invalid story ID")
 			return
 		}
 		storyIDs = append(storyIDs, id)
@@ -42,7 +41,7 @@ func (h *Exercise) CountStoriesExercise(c *gin.Context) {
 
 	counts, err := h.service.GetExerciseCountByStoryIDs(c, storyIDs)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, err.Error())
+		response.InternalServerError(c, err, "Failed to count exercises")
 		return
 	}
 
@@ -72,13 +71,13 @@ func (h *Exercise) CountStoriesExercise(c *gin.Context) {
 func (h *Exercise) AdminListExercise(c *gin.Context) {
 	storyID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "Invalid story id")
+		response.BadRequest(c, err, "Invalid story ID")
 		return
 	}
 
 	exercises, err := h.service.ListExerciseByStoryID(c, storyID)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, err.Error())
+		response.InternalServerError(c, err, "Failed to list exercises")
 		return
 	}
 
@@ -104,13 +103,13 @@ func (h *Exercise) AdminListExercise(c *gin.Context) {
 func (h *Exercise) ListExercise(c *gin.Context) {
 	storyID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "Invalid story id")
+		response.BadRequest(c, err, "Invalid story ID")
 		return
 	}
 
 	exercises, err := h.service.ListExerciseByStoryID(c, storyID)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, err.Error())
+		response.InternalServerError(c, err, "Failed to list exercises")
 		return
 	}
 

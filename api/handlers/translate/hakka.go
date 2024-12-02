@@ -3,7 +3,6 @@ package htranslate
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-
 	"github.com/rice9547/hakka_story/lib/response"
 )
 
@@ -44,13 +43,13 @@ func New(generator textGenerator) *Translate {
 func (t *Translate) TranslateHakka(c *gin.Context) {
 	var request TranslateRequest
 	if err := c.BindJSON(&request); err != nil {
-		response.Error(c, 400, "Invalid input")
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 
 	hakka, err := t.generator.Text2Text(c.Request.Context(), request.Text)
 	if err != nil {
-		response.Error(c, 500, "Failed to translate")
+		response.InternalServerError(c, err, "Failed to translate")
 		return
 	}
 

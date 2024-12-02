@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"slices"
 	"strings"
@@ -47,26 +46,26 @@ func (m *AuthMiddlewares) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			response.Unauthorized(c, "Authorization header is required")
 			return
 		}
 
 		parts := strings.SplitN(authHeader, " ", 2)
 		if !(len(parts) == 2 && parts[0] == "Bearer") {
-			response.Error(c, http.StatusUnauthorized, "Invalid token format")
+			response.Unauthorized(c, "Invalid token format")
 			return
 		}
 
 		tokenString := parts[1]
 		jwtValidator, err := m.newJWTValidator()
 		if err != nil {
-			response.Error(c, http.StatusInternalServerError, "Failed to create JWT validator")
+			response.InternalServerError(c, err, "Failed to create JWT validator")
 			return
 		}
 
 		claims, err := jwtValidator.ValidateToken(context.Background(), tokenString)
 		if err != nil {
-			response.Error(c, http.StatusUnauthorized, "Invalid token")
+			response.Unauthorized(c, "Invalid token")
 			return
 		}
 
@@ -83,7 +82,7 @@ func (m *AuthMiddlewares) AdminOnlyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		roles, exists := c.Get("roles")
 		if !exists || !slices.Contains(roles.([]string), "admin") {
-			response.Error(c, http.StatusForbidden, "Forbidden")
+			response.Forbidden(c, "Forbidden")
 			return
 		}
 		c.Next()

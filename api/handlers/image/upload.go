@@ -1,8 +1,6 @@
 package himage
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/rice9547/hakka_story/lib/errors"
@@ -34,7 +32,7 @@ type (
 func (h *Image) Upload(c *gin.Context) {
 	file, header, err := c.Request.FormFile("image")
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "failed to read file")
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 	defer file.Close()
@@ -42,10 +40,10 @@ func (h *Image) Upload(c *gin.Context) {
 	url, err := h.uploader.UploadImage(c.Request.Context(), file, header)
 	if err != nil {
 		if errors.Is(err, errors.ErrUnsupportedFileType) {
-			response.Error(c, http.StatusBadRequest, "unsupported file type")
+			response.BadRequest(c, err, "Unsupported file type")
 			return
 		}
-		response.Error(c, http.StatusInternalServerError, "failed to upload image")
+		response.BadRequest(c, err, "Failed to upload image")
 		return
 	}
 

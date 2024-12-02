@@ -1,8 +1,6 @@
 package hcategory
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/rice9547/hakka_story/lib/response"
@@ -21,7 +19,7 @@ func (h *Category) List(c *gin.Context) {
 	name := c.DefaultQuery("name", "")
 	categories, err := h.service.ListByName(c.Request.Context(), name)
 	if err != nil {
-		response.Error(c, 500, fmt.Sprintf("Failed to retrieve categories, err: %v", err))
+		response.InternalServerError(c, err, "Failed to retrieve categories")
 		return
 	}
 

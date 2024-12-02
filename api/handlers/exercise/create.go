@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rice9547/hakka_story/entities"
 	"github.com/rice9547/hakka_story/lib/response"
-	"net/http"
 	"strconv"
 )
 
@@ -86,12 +85,12 @@ func (h *Exercise) CreateExercise(c *gin.Context) {
 	req := new(UpsertExerciseRequest)
 	exercise, err := req.bind(c)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "Invalid input")
+		response.BadRequest(c, err, "Invalid input")
 		return
 	}
 
 	if err := h.service.CreateExercise(c, exercise); err != nil {
-		response.Error(c, http.StatusInternalServerError, "Internal server error")
+		response.InternalServerError(c, err, "Failed to create exercise")
 		return
 	}
 
