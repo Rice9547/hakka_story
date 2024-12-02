@@ -11,6 +11,7 @@ type (
 		CountMany(ctx context.Context, storyIDs []uint64) ([]ExerciseCounter, error)
 		List(ctx context.Context, storyID uint64) ([]entities.Exercise, error)
 		Update(ctx context.Context, exerciseID uint64, exercise *entities.Exercise) error
+		Delete(ctx context.Context, storyID, exerciseID uint64) error
 	}
 
 	ExerciseCounter struct {

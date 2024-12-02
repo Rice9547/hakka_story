@@ -15,6 +15,7 @@ var (
 
 	ErrStoryNotFound    = errors.New("story not found")
 	ErrCategoryNotFound = errors.New("category not found")
+	ErrExerciseNotFound = errors.New("exercise not found")
 
 	ErrUnsupportedFileType = errors.New("unsupported file type")
 	ErrFailedToUploadFile  = errors.New("failed to upload file")

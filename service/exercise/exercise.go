@@ -30,3 +30,7 @@ func (e *Exercise) UpdateExercise(ctx context.Context, storyID, exerciseID uint6
 	exercise.StoryID = storyID
 	return e.exerciseRepo.Update(ctx, exerciseID, exercise)
 }
+
+func (e *Exercise) DeleteExercise(ctx context.Context, storyID, exerciseID uint64) error {
+	return e.exerciseRepo.Delete(ctx, storyID, exerciseID)
+}

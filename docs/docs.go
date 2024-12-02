@@ -745,7 +745,7 @@ const docTemplate = `{
         },
         "/admin/story/{id}/exercise/{exercise_id}": {
             "put": {
-                "description": "Update a exists exercise associated with a specific story ID",
+                "description": "Update an exists exercise associated with a specific story ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -755,7 +755,7 @@ const docTemplate = `{
                 "tags": [
                     "admin exercise"
                 ],
-                "summary": "Update a exercise",
+                "summary": "Update an exercise",
                 "parameters": [
                     {
                         "type": "integer",
@@ -808,6 +808,61 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "DeleteExercise an exercise by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin exercise"
+                ],
+                "summary": "DeleteExercise a exercise by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Story ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Exercise ID",
+                        "name": "exercise_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.ResponseBase"
                         }

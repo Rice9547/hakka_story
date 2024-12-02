@@ -64,6 +64,7 @@ func InitRoutes(
 	adminExerciseRoutes.GET("", exerciseHandler.ListExerciseByStoryID)
 	adminExerciseRoutes.POST("", exerciseHandler.CreateExercise)
 	adminExerciseRoutes.PUT("/:exercise_id", exerciseHandler.UpdateExercise)
+	adminExerciseRoutes.DELETE("/:exercise_id", exerciseHandler.DeleteExercise)
 
 	adminCategoryRoutes := adminRoute.Group("/category")
 	adminCategoryRoutes.POST("", categoryHandler.Create)

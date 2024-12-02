@@ -7,8 +7,8 @@ import (
 )
 
 // UpdateExercise godoc
-// @Summary Update a exercise
-// @Description Update a exists exercise associated with a specific story ID
+// @Summary Update an exercise
+// @Description Update an exists exercise associated with a specific story ID
 // @Tags admin exercise
 // @Accept json
 // @Produce json

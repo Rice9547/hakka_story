@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 	"github.com/rice9547/hakka_story/entities"
+	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/repository"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -62,4 +63,16 @@ func (r *ExerciseRepository) Update(ctx context.Context, exerciseID uint64, exer
 			exercise.ID = exerciseID
 			return tx.Save(exercise).Error
 		})
+}
+
+func (r *ExerciseRepository) Delete(ctx context.Context, storyID, exerciseID uint64) error {
+	result := r.DB.WithContext(ctx).
+		Delete(&entities.Exercise{}, "story_id = ? AND id = ?", storyID, exerciseID)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.ErrExerciseNotFound
+	}
+	return nil
 }
