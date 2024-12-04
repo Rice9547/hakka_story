@@ -6,7 +6,10 @@ import (
 	"fmt"
 )
 
-const textApiUrl = "https://api.openai.com/v1/chat/completions"
+const (
+	textApiUrl      = "https://api.openai.com/v1/chat/completions"
+	translatePrompt = "你是一個客語專家，接下來你會收到一些中文的故事段落，請翻譯成四縣腔的客語，使用簡單、適合小朋友理解的語言，不需要額外的回覆。"
+)
 
 type Message struct {
 	Role    string `json:"role"`
@@ -26,7 +29,7 @@ type Response struct {
 
 func (c *Client) Text2Text(ctx context.Context, prompt string) (string, error) {
 	messages := []Message{
-		{Role: "system", Content: "你是一個客語專家，接下來你會收到一些中文的故事段落，請翻譯成四縣腔的客語，不需要額外的回覆。"},
+		{Role: "system", Content: translatePrompt},
 		{Role: "user", Content: prompt},
 	}
 
