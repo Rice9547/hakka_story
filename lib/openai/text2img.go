@@ -1,7 +1,6 @@
 package openai
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -30,29 +29,14 @@ func (c *Client) Text2Image(ctx context.Context, prompt string) (string, []byte,
 		Size:   "1024x1024",
 	}
 
-	jsonData, _ := json.Marshal(requestData)
-	req, err := http.NewRequestWithContext(ctx, "POST", imageApiUrl, bytes.NewBuffer(jsonData))
+	respData, err := c.Post(ctx, imageApiUrl, requestData)
 	if err != nil {
-		return "", nil, err
-	}
-	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return "", nil, err
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(resp.Body)
-
-	if resp.StatusCode != http.StatusOK {
-		return "", nil, fmt.Errorf("failed to generate text: %s", body)
+		return "", nil, fmt.Errorf("failed to generate image: %v", err)
 	}
 
-	var response ImageResponse
-	if err = json.Unmarshal(body, &response); err != nil {
-		return "", nil, err
+	response := ImageResponse{}
+	if err := json.Unmarshal(respData, &response); err != nil {
+		return "", nil, fmt.Errorf("failed to unmarshal response: %v", err)
 	}
 
 	if len(response.Data) == 0 {

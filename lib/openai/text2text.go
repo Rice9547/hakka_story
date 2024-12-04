@@ -1,12 +1,9 @@
 package openai
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 )
 
 const textApiUrl = "https://api.openai.com/v1/chat/completions"
@@ -38,31 +35,19 @@ func (c *Client) Text2Text(ctx context.Context, prompt string) (string, error) {
 		Messages: messages,
 	}
 
-	jsonData, _ := json.Marshal(requestData)
-	req, _ := http.NewRequestWithContext(ctx, "POST", textApiUrl, bytes.NewBuffer(jsonData))
-	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.httpClient.Do(req)
+	respData, err := c.Post(ctx, textApiUrl, requestData)
 	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(resp.Body)
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("failed to generate text: %s", body)
+		return "", fmt.Errorf("failed to generate text: %v", err)
 	}
 
-	var response Response
-	if err := json.Unmarshal(body, &response); err != nil {
-		return "", err
+	response := Response{}
+	if err := json.Unmarshal(respData, &response); err != nil {
+		return "", fmt.Errorf("failed to unmarshal response: %v", err)
 	}
 
 	if len(response.Choices) > 0 {
 		return response.Choices[0].Message.Content, nil
-	} else {
-		return "", fmt.Errorf("no response found")
 	}
+
+	return "", fmt.Errorf("no response found")
 }
