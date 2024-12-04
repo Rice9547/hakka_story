@@ -49,6 +49,20 @@ func (r *ExerciseRepository) List(ctx context.Context, storyID uint64) ([]entiti
 	return exercises, err
 }
 
+func (r *ExerciseRepository) ListMany(ctx context.Context, storyIDs []uint64) ([]entities.Exercise, error) {
+	exercises := make([]entities.Exercise, 0)
+	query := r.DB.WithContext(ctx).
+		Preload(clause.Associations)
+
+	if len(storyIDs) > 0 {
+		query = query.Where("story_id IN (?)", storyIDs)
+	}
+
+	err := query.Find(&exercises).Error
+
+	return exercises, err
+}
+
 func (r *ExerciseRepository) Update(ctx context.Context, exerciseID uint64, exercise *entities.Exercise) error {
 	return r.DB.WithContext(ctx).
 		Transaction(func(tx *gorm.DB) error {

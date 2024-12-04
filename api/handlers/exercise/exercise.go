@@ -12,6 +12,7 @@ type (
 		CreateExercise(ctx context.Context, exercise *entities.Exercise) error
 		GetExerciseCountByStoryIDs(ctx context.Context, storyIDs []uint64) ([]repository.ExerciseCounter, error)
 		ListExerciseByStoryID(ctx context.Context, storyID uint64) ([]entities.Exercise, error)
+		ListExerciseByStoryIDs(ctx context.Context, storyIDs []uint64) ([]entities.Exercise, error)
 		UpdateExercise(ctx context.Context, storyID, exerciseID uint64, exercise *entities.Exercise) error
 		DeleteExercise(ctx context.Context, storyID, exerciseID uint64) error
 	}

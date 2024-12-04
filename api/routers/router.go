@@ -42,10 +42,18 @@ func InitRoutes(
 	audioHandler := haudio.New(uploadService, openaiClient)
 	translateHandler := htranslate.New(openaiClient)
 
-	apiRoute.GET("/story", storyHandler.List)
-	apiRoute.GET("/story/:id", storyHandler.Get)
-	apiRoute.GET("/category", categoryHandler.List)
-	apiRoute.GET("/story/:id/exercise", exerciseHandler.ListExercise)
+	storyRoutes := apiRoute.Group("/story")
+	storyRoutes.GET("", storyHandler.List)
+	storyRoutes.GET("/:id", storyHandler.Get)
+
+	storyExerciseRoutes := storyRoutes.Group("/:id/exercise")
+	storyExerciseRoutes.GET("", exerciseHandler.ListStoryExercise)
+
+	categoryRoutes := apiRoute.Group("/category")
+	categoryRoutes.GET("", categoryHandler.List)
+
+	exerciseRoutes := apiRoute.Group("/exercise")
+	exerciseRoutes.GET("", exerciseHandler.ListExercise)
 
 	adminRoute.GET("/auth", hauth.Auth)
 

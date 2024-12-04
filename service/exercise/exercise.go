@@ -26,6 +26,10 @@ func (e *Exercise) ListExerciseByStoryID(ctx context.Context, storyID uint64) ([
 	return e.exerciseRepo.List(ctx, storyID)
 }
 
+func (e *Exercise) ListExerciseByStoryIDs(ctx context.Context, storyIDs []uint64) ([]entities.Exercise, error) {
+	return e.exerciseRepo.ListMany(ctx, storyIDs)
+}
+
 func (e *Exercise) UpdateExercise(ctx context.Context, storyID, exerciseID uint64, exercise *entities.Exercise) error {
 	exercise.StoryID = storyID
 	return e.exerciseRepo.Update(ctx, exerciseID, exercise)

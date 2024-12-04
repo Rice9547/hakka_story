@@ -22,7 +22,7 @@ type (
 // @Tags admin exercise
 // @Accept json
 // @Produce json
-// @Param story_ids query []uint64 true "Story IDs"
+// @Param story_ids query []uint64 false "Story IDs"
 // @Success 200 {object} response.Response{data=[]CountStoryExerciseResponse}
 // @Failure 400 {object} response.ResponseBase "Invalid story id"
 // @Failure 500 {object} response.ResponseBase "Internal server error"
@@ -89,7 +89,7 @@ func (h *Exercise) AdminListExercise(c *gin.Context) {
 	response.Success(c, resp)
 }
 
-// ListExercise godoc
+// ListStoryExercise godoc
 // @Summary List exercises by story ID
 // @Description Retrieves a list of exercises associated with a specific story ID
 // @Tags exercise
@@ -100,7 +100,7 @@ func (h *Exercise) AdminListExercise(c *gin.Context) {
 // @Failure 400 {object} response.ResponseBase "Invalid story id"
 // @Failure 500 {object} response.ResponseBase "Internal server error"
 // @Router /story/{id}/exercise [get]
-func (h *Exercise) ListExercise(c *gin.Context) {
+func (h *Exercise) ListStoryExercise(c *gin.Context) {
 	storyID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		response.BadRequest(c, err, "Invalid story ID")
@@ -108,6 +108,43 @@ func (h *Exercise) ListExercise(c *gin.Context) {
 	}
 
 	exercises, err := h.service.ListExerciseByStoryID(c, storyID)
+	if err != nil {
+		response.InternalServerError(c, err, "Failed to list exercises")
+		return
+	}
+
+	resp := make([]ExerciseResponse, 0, len(exercises))
+	for _, exercise := range exercises {
+		resp = append(resp, toExerciseResponse(exercise))
+	}
+
+	response.Success(c, resp)
+}
+
+// ListExercise godoc
+// @Summary List exercises by story IDs
+// @Description Retrieves a list of exercises associated with specific story IDs
+// @Tags exercise
+// @Accept json
+// @Produce json
+// @Param story_ids query []uint64 false "Story IDs"
+// @Success 200 {object} response.Response{data=[]ExerciseResponse}
+// @Failure 400 {object} response.ResponseBase "Invalid story id"
+// @Failure 500 {object} response.ResponseBase "Internal server error"
+// @Router /exercise [get]
+func (h *Exercise) ListExercise(c *gin.Context) {
+	qryStoryIds := c.QueryArray("story_ids")
+	storyIDs := make([]uint64, 0, len(qryStoryIds))
+	for _, sid := range qryStoryIds {
+		id, err := strconv.ParseUint(sid, 10, 64)
+		if err != nil {
+			response.BadRequest(c, err, "Invalid story ID")
+			return
+		}
+		storyIDs = append(storyIDs, id)
+	}
+
+	exercises, err := h.service.ListExerciseByStoryIDs(c, storyIDs)
 	if err != nil {
 		response.InternalServerError(c, err, "Failed to list exercises")
 		return
