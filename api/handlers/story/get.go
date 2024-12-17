@@ -12,12 +12,12 @@ import (
 // GetStory godoc
 // @Summary      Get story
 // @Description  Get story by id with pages
-// @Tags         stories
+// @Tags         story
 // @Produce      json
 // @Param        id   path      int  true  "Story ID"
 // @Success      200  {object}  response.Response{data=FullStoryResponse}
 // @Failure      500  {object}  response.ResponseBase
-// @Router       /story/:id [get]
+// @Router       /story/{id} [get]
 func (h *Story) Get(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

@@ -21,7 +21,7 @@ import (
 // @Failure      400    {object}  response.ResponseBase
 // @Failure      401    {object}  response.ResponseBase
 // @Failure      500    {object}  response.ResponseBase
-// @Router       /admin/story/:id [put]
+// @Router       /admin/story/{id} [put]
 func (h *Story) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

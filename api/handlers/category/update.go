@@ -12,7 +12,7 @@ import (
 // UpdateCategory godoc
 // @Summary      Update category
 // @Description  Update category by id
-// @Tags         admin categories
+// @Tags         admin category
 // @Produce      json
 // @Param        id   path      int  true  "Category ID"
 // @Param        category  body  UpsertRequest  true  "Category data"
@@ -20,7 +20,7 @@ import (
 // @Failure      400  {object}  response.ResponseBase
 // @Failure      404  {object}  response.ResponseBase
 // @Failure      500  {object}  response.ResponseBase
-// @Router       /category/:id [put]
+// @Router       /category/{id} [put]
 func (h *Category) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

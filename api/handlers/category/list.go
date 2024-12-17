@@ -9,7 +9,7 @@ import (
 // ListCategory godoc
 // @Summary      List categories
 // @Description  Get list of categories by name
-// @Tags         categories
+// @Tags         category
 // @Produce      json
 // @Param        name  query     string  false  "Category name"
 // @Success      200   {array}   response.Response{data=CategoryResponse}

@@ -12,7 +12,7 @@ import (
 // DeleteCategory godoc
 // @Summary Delete a category by ID
 // @Description Delete a category by its ID
-// @Tags admin categories
+// @Tags admin category
 // @Accept json
 // @Produce json
 // @Param id path uint64 true "Category ID"

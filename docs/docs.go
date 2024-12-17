@@ -187,7 +187,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin categories"
+                    "admin category"
                 ],
                 "summary": "Delete a category by ID",
                 "parameters": [
@@ -437,7 +437,69 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/story/:id": {
+        "/admin/story/exercise": {
+            "get": {
+                "description": "Retrieves the count of exercises associated with specific story IDs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin exercise"
+                ],
+                "summary": "Count exercises for stories",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Story IDs",
+                        "name": "story_ids",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/hexercise.CountStoryExerciseResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid story id",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/story/{id}": {
             "put": {
                 "description": "Update Story by ID",
                 "consumes": [
@@ -506,71 +568,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/admin/story/exercise": {
-            "get": {
-                "description": "Retrieves the count of exercises associated with specific story IDs",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "admin exercise"
-                ],
-                "summary": "Count exercises for stories",
-                "parameters": [
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        },
-                        "collectionFormat": "csv",
-                        "description": "Story IDs",
-                        "name": "story_ids",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/hexercise.CountStoryExerciseResponse"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid story id",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseBase"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseBase"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/story/{id}": {
+            },
             "delete": {
                 "description": "Delete a story by its ID",
                 "consumes": [
@@ -944,7 +942,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin categories"
+                    "admin category"
                 ],
                 "summary": "Create a new category",
                 "parameters": [
@@ -987,7 +985,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "categories"
+                    "category"
                 ],
                 "summary": "List categories",
                 "parameters": [
@@ -1029,14 +1027,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/category/:id": {
+        "/category/{id}": {
             "put": {
                 "description": "Update category by id",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "admin categories"
+                    "admin category"
                 ],
                 "summary": "Update category",
                 "parameters": [
@@ -1225,7 +1223,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "stories"
+                    "story"
                 ],
                 "summary": "List stories",
                 "parameters": [
@@ -1268,14 +1266,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/story/:id": {
+        "/story/{id}": {
             "get": {
                 "description": "Get story by id with pages",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "stories"
+                    "story"
                 ],
                 "summary": "Get story",
                 "parameters": [

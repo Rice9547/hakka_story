@@ -16,7 +16,7 @@ type (
 // GetStories godoc
 // @Summary      List stories
 // @Description  Get all stories
-// @Tags         stories
+// @Tags         story
 // @Produce      json
 // @Param        name  query    []string  false  "Category names"
 // @Success      200  {object}  response.Response{data=StoryResponse}

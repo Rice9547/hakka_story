@@ -9,7 +9,7 @@ import (
 // CreateCategory godoc
 // @Summary Create a new category
 // @Description Create a new category
-// @Tags admin categories
+// @Tags admin category
 // @Accept json
 // @Produce json
 // @Param category body UpsertRequest true "Category to create"
