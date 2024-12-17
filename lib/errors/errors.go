@@ -2,6 +2,7 @@ package errors
 
 import (
 	"errors"
+	"fmt"
 )
 
 var (
@@ -11,8 +12,14 @@ var (
 
 	ErrUnsupportedFileType = errors.New("unsupported file type")
 	ErrFailedToUploadFile  = errors.New("failed to upload file")
+
+	ErrUnauthorized = errors.New("unauthorized")
 )
 
 func Is(err error, target error) bool {
 	return errors.Is(err, target)
+}
+
+func NewUnauthorizedError(message string) error {
+	return fmt.Errorf("%w: %s", ErrUnauthorized, message)
 }

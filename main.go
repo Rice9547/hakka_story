@@ -46,7 +46,7 @@ func main() {
 	router.Use(middlewares.CORSMiddleware(cfg.Server.AllowOrigins))
 	apiRoute := router.Group("/api")
 	adminRoute := apiRoute.Group("/admin")
-	adminRoute.Use(mw.AuthMiddleware(), mw.AdminOnlyMiddleware())
+	adminRoute.Use(mw.AuthMiddleware(true), mw.AdminOnlyMiddleware())
 
 	routers.InitRoutes(apiRoute, adminRoute, db, uploader, openaiClient)
 

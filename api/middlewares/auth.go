@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"fmt"
+
 	"log"
 	"net/url"
 	"slices"
@@ -14,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/rice9547/hakka_story/config"
+	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/lib/response"
 )
 
@@ -42,37 +44,26 @@ func (c *CustomClaims) Validate(ctx context.Context) error {
 	return nil
 }
 
-func (m *AuthMiddlewares) AuthMiddleware() gin.HandlerFunc {
+func (m *AuthMiddlewares) AuthMiddleware(required bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			response.Unauthorized(c, "Authorization header is required")
-			return
-		}
-
-		parts := strings.SplitN(authHeader, " ", 2)
-		if !(len(parts) == 2 && parts[0] == "Bearer") {
-			response.Unauthorized(c, "Invalid token format")
-			return
-		}
-
-		tokenString := parts[1]
-		jwtValidator, err := m.newJWTValidator()
+		email, roles, err := m.getUserInfo(c)
 		if err != nil {
-			response.InternalServerError(c, err, "Failed to create JWT validator")
+			if !required {
+				c.Next()
+				return
+			}
+
+			switch true {
+			case errors.Is(err, errors.ErrUnauthorized):
+				response.Unauthorized(c, "Unauthorized")
+			default:
+				response.InternalServerError(c, err, "Failed to get user info")
+			}
 			return
 		}
 
-		claims, err := jwtValidator.ValidateToken(context.Background(), tokenString)
-		if err != nil {
-			response.Unauthorized(c, "Invalid token")
-			return
-		}
-
-		customClaims := claims.(*validator.ValidatedClaims).CustomClaims.(*CustomClaims)
-
-		c.Set("user", customClaims.Email)
-		c.Set("roles", customClaims.Roles)
+		c.Set("user", email)
+		c.Set("roles", roles)
 
 		c.Next()
 	}
@@ -87,6 +78,32 @@ func (m *AuthMiddlewares) AdminOnlyMiddleware() gin.HandlerFunc {
 		}
 		c.Next()
 	}
+}
+
+func (m *AuthMiddlewares) getUserInfo(c *gin.Context) (string, []string, error) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		return "", nil, errors.NewUnauthorizedError("Authorization header is required")
+	}
+
+	parts := strings.SplitN(authHeader, " ", 2)
+	if !(len(parts) == 2 && parts[0] == "Bearer") {
+		return "", nil, errors.NewUnauthorizedError("Invalid token format")
+	}
+
+	tokenString := parts[1]
+	jwtValidator, err := m.newJWTValidator()
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to create JWT validator: %w", err)
+	}
+
+	claims, err := jwtValidator.ValidateToken(context.Background(), tokenString)
+	if err != nil {
+		return "", nil, errors.NewUnauthorizedError("Invalid token")
+	}
+
+	customClaims := claims.(*validator.ValidatedClaims).CustomClaims.(*CustomClaims)
+	return customClaims.Email, customClaims.Roles, nil
 }
 
 func (m *AuthMiddlewares) newJWTValidator() (*validator.Validator, error) {
