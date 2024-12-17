@@ -1159,6 +1159,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/exercise/{exercise_id}": {
+            "post": {
+                "description": "Do an exists exercise associated with a specific story ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exercise"
+                ],
+                "summary": "Do an exercise",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Exercise ID",
+                        "name": "exercise_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Exercise data",
+                        "name": "exercise",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/hexercise.DoExerciseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/hexercise.DoExerciseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Exercise type mismatch",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "404": {
+                        "description": "Exercise not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseBase"
+                        }
+                    }
+                }
+            }
+        },
         "/story": {
             "get": {
                 "description": "Get all stories",
@@ -1426,6 +1485,42 @@ const docTemplate = `{
                 },
                 "story_title": {
                     "type": "string"
+                }
+            }
+        },
+        "hexercise.DoExerciseRequest": {
+            "type": "object",
+            "required": [
+                "answers"
+            ],
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "minimum": 0,
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entities.ExerciseType"
+                        }
+                    ]
+                }
+            }
+        },
+        "hexercise.DoExerciseResponse": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "is_correct": {
+                    "type": "boolean"
                 }
             }
         },

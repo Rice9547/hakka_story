@@ -9,6 +9,7 @@ type (
 	Exercise interface {
 		Save(ctx context.Context, exercise *entities.Exercise) error
 		CountMany(ctx context.Context, storyIDs []uint64) ([]ExerciseCounter, error)
+		Get(ctx context.Context, exerciseID uint64) (*entities.Exercise, error)
 		List(ctx context.Context, storyID uint64) ([]entities.Exercise, error)
 		ListMany(ctx context.Context, storyIDs []uint64) ([]entities.Exercise, error)
 		Update(ctx context.Context, exerciseID uint64, exercise *entities.Exercise) error

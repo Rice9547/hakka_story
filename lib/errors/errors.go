@@ -13,6 +13,10 @@ var (
 	ErrUnsupportedFileType = errors.New("unsupported file type")
 	ErrFailedToUploadFile  = errors.New("failed to upload file")
 
+	ErrExerciseTypeMismatch   = errors.New("exercise type mismatch")
+	ErrExerciseTypeNotSupport = errors.New("exercise type not supported")
+	ErrExerciseInvalidAnswer  = errors.New("exercise invalid answer")
+
 	ErrUnauthorized = errors.New("unauthorized")
 )
 

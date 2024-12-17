@@ -15,6 +15,10 @@ type (
 		ListExerciseByStoryIDs(ctx context.Context, storyIDs []uint64) ([]entities.Exercise, error)
 		UpdateExercise(ctx context.Context, storyID, exerciseID uint64, exercise *entities.Exercise) error
 		DeleteExercise(ctx context.Context, storyID, exerciseID uint64) error
+
+		DoExercise(
+			ctx context.Context, userID string, exerciseID uint64, typ entities.ExerciseType, answers []string) (
+			bool, []string, error)
 	}
 
 	Exercise struct {

@@ -21,6 +21,20 @@ func (r *ExerciseRepository) Save(ctx context.Context, exercise *entities.Exerci
 	return r.DB.WithContext(ctx).Save(exercise).Error
 }
 
+func (r *ExerciseRepository) Get(ctx context.Context, exerciseID uint64) (*entities.Exercise, error) {
+	exercise := new(entities.Exercise)
+	err := r.DB.WithContext(ctx).
+		Preload(clause.Associations).
+		First(exercise, exerciseID).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.ErrExerciseNotFound
+		}
+		return nil, err
+	}
+	return exercise, nil
+}
+
 func (r *ExerciseRepository) CountMany(ctx context.Context, storyIDs []uint64) ([]repository.ExerciseCounter, error) {
 	result := make([]repository.ExerciseCounter, 0)
 

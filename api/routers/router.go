@@ -54,6 +54,7 @@ func InitRoutes(
 
 	exerciseRoutes := apiRoute.Group("/exercise")
 	exerciseRoutes.GET("", exerciseHandler.ListExercise)
+	exerciseRoutes.POST("/:exercise_id", exerciseHandler.Do)
 
 	adminRoute.GET("/auth", hauth.Auth)
 
