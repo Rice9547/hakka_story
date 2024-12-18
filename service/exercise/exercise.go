@@ -2,10 +2,12 @@ package sexercise
 
 import (
 	"context"
+	"golang.org/x/exp/rand"
+	"slices"
+
 	"github.com/rice9547/hakka_story/entities"
 	"github.com/rice9547/hakka_story/lib/errors"
 	"github.com/rice9547/hakka_story/repository"
-	"slices"
 )
 
 type Exercise struct {
@@ -29,7 +31,16 @@ func (e *Exercise) ListExerciseByStoryID(ctx context.Context, storyID uint64) ([
 }
 
 func (e *Exercise) ListExerciseByStoryIDs(ctx context.Context, storyIDs []uint64) ([]entities.Exercise, error) {
-	return e.exerciseRepo.ListMany(ctx, storyIDs)
+	exercises, err := e.exerciseRepo.ListMany(ctx, storyIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	rand.Shuffle(len(exercises), func(i, j int) {
+		exercises[i], exercises[j] = exercises[j], exercises[i]
+	})
+
+	return exercises, nil
 }
 
 func (e *Exercise) UpdateExercise(ctx context.Context, storyID, exerciseID uint64, exercise *entities.Exercise) error {
